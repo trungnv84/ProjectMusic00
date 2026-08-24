@@ -57,13 +57,38 @@ function describeProgress(s){
   const t = s.transcript || {};
   const done = Object.keys(t).filter(k => t[k] && Object.keys(t[k]).length > 0);
   const ck = s.checkpoint;
+  const assignments = s.assignments || {};
   let info = `Đã hoàn thành ${done.length}/7 round.`;
   if (done.length > 0) info += ` (${done.map(k => (roundMeta.find(m=>m.key===k)||{}).label || k).join(', ')})`;
   if (ck && ck.roundKey) {
+    const meta = roundMeta.find(m=>m.key===ck.roundKey) || {};
+    let needProviders = [];
+    if (meta.providers && meta.providers.length > 0) {
+      needProviders = meta.providers;
+    } else if (ck.roundKey === 'round5' || ck.roundKey === 'final') {
+      needProviders = assignments.judge ? [assignments.judge] : [];
+    } else if (ck.roundKey === 'redTeam') {
+      needProviders = assignments.redTeam ? [assignments.redTeam] : [];
+    }
+    const doneSet = new Set(ck.done || []);
+    const missing = needProviders.length ? needProviders.filter(p => !doneSet.has(p)) : [];
     const doneList = (ck.done || []).map(p => names[p] || p).join(', ') || 'chưa AI nào xong';
-    info += `\nĐang dừng ở: ${(roundMeta.find(m=>m.key===ck.roundKey)||{}).label || ck.roundKey} — đã xong: ${doneList}.`;
+    const missingList = missing.length
+      ? missing.map(p => names[p] || p).join(', ')
+      : (needProviders.length === 0 && ck.done && ck.done.length === 0 ? 'AI đặc trách (xem assignments)' : '—');
+    info += `\nĐang dừng ở: ${meta.label || ck.roundKey}`;
+    info += `\n   • Đã xong trong round này: ${doneList}`;
+    if (missing.length > 0 || (ck.done && ck.done.length === 0)) {
+      info += `\n   • Cần chạy lại trong round này: ${missingList}`;
+    }
   }
   if (s.error) info += `\nLỗi trước đó: ${s.error}`;
+  if (ck && s.status !== 'running' && s.status !== 'completed') {
+    info += `\n👉 LÀM SAO ĐỂ CHẠY TIẾP:`;
+    info += `\n   1. Kiểm tra các tab AI còn thiếu (refresh, đăng nhập lại nếu cần).`;
+    info += `\n   2. Nhấn nút [⏯ TIẾP TỤC / RESUME].`;
+    info += `\n   3. Hệ thống sẽ BỎ QUA các tab đã xong, CHỈ chạy lại các tab bị lỗi/thiếu, rồi tự động tiếp tục các round sau.`;
+  }
   return info;
 }
 
@@ -157,6 +182,7 @@ function escapeHtml(s){ return String(s).replace(/[&<>'"]/g,c=>({'&':'&amp;','<'
 async function scanSnapshots(){
   $('snapshotStatus').innerHTML = '<span class="snapshot-working">🔄 Đang quét 5 tab... (sẽ lần lượt mở từng tab lên phía trước)</span>';
   $('snapshotBtn').disabled = true;
+  chrome.runtime.sendMessage({type:'DEBUG_INGEST', payload:{sessionId:'8a40bc', runId:'post-fix', hypothesisId:'H', location:'dashboard.js:scanSnapshots', message:'scan clicked'}}).catch(()=>{});
   try {
     const r = await chrome.runtime.sendMessage({type:'RECOVER_SNAPSHOT'});
     if (!r.ok) throw new Error(r.error || 'Quét thất bại.');
@@ -289,6 +315,7 @@ function onCandidateSelect(e){
     ta.value = txt;
     if (!manualTranscript[roundKey]) manualTranscript[roundKey] = {};
     manualTranscript[roundKey][provider] = txt;
+    chrome.runtime.sendMessage({type:'DEBUG_INGEST', payload:{sessionId:'8a40bc', runId:'post-fix', hypothesisId:'C', location:'dashboard.js:onCandidateSelect', message:'selected message', data:{roundKey, provider, textLen: txt.length}}}).catch(()=>{});
   } else {
     if (manualTranscript[roundKey]) delete manualTranscript[roundKey][provider];
   }
@@ -326,13 +353,30 @@ function clearRound(key){
   buildRoundBuilder();
 }
 
+function providersForRound(key) {
+  const m = roundMeta.find(x => x.key === key);
+  if (!m) return [];
+  return (m.providers && m.providers.length > 0) ? m.providers : determineSingleAI(key);
+}
+
+function assignedOf(key) {
+  const have = manualTranscript[key] || {};
+  return Object.keys(have).filter(p => String(have[p] || '').trim().length > 0);
+}
+
+function isRoundFull(key) {
+  const need = providersForRound(key);
+  const have = new Set(assignedOf(key));
+  return need.length > 0 && need.every(p => have.has(p));
+}
+
 function updateManualResumeState(){
   const hint = $('recoveryHint');
   const btn = $('manualResumeBtn');
   const question = $('question').value.trim();
-  const filled = roundMeta.filter(m => manualTranscript[m.key] && Object.keys(manualTranscript[m.key]).length > 0);
-  const firstMissingIdx = roundMeta.findIndex(m => !manualTranscript[m.key] || Object.keys(manualTranscript[m.key]).length === 0);
-  const continuous = filled.length > 0 && filled.every((m, i) => roundMeta[i] && roundMeta[i].key === m.key);
+  const firstIncompleteIdx = roundMeta.findIndex(m => !isRoundFull(m.key));
+  const anyAssigned = roundMeta.some(m => assignedOf(m.key).length > 0);
+  const laterFilled = firstIncompleteIdx >= 0 && roundMeta.slice(firstIncompleteIdx + 1).some(m => assignedOf(m.key).length > 0);
 
   if (!question) {
     btn.disabled = true;
@@ -340,22 +384,35 @@ function updateManualResumeState(){
     hint.className = 'recovery-hint rh-warn';
     return;
   }
-  if (filled.length === 0) {
+  if (!anyAssigned) {
     btn.disabled = true;
-    hint.innerHTML = '💡 Chưa chọn kết quả nào. Chọn từng message (hoặc nhập tay), hệ thống sẽ chạy tiếp từ round trống đầu tiên.';
+    hint.innerHTML = '💡 Chưa chọn kết quả nào. Chọn từng message (hoặc nhập tay), hệ thống sẽ chạy tiếp các tab còn thiếu của round dở, rồi các round sau.';
     hint.className = 'recovery-hint rh-info';
     return;
   }
-  if (!continuous) {
+  if (laterFilled) {
     btn.disabled = true;
-    const firstGap = roundMeta[firstMissingIdx].label;
-    hint.innerHTML = `⚠ Cần điền liên tiếp từ Round 1. Round bị bỏ trống đầu tiên: <b>${firstGap}</b>. Các round sau chỉ có thể chạy khi có kết quả các round trước đó.`;
+    const firstGap = roundMeta[firstIncompleteIdx].label;
+    hint.innerHTML = `⚠ Round chưa đủ AI: <b>${firstGap}</b>. Hãy điền đủ AI cho round này, hoặc xóa các round sau.`;
     hint.className = 'recovery-hint rh-warn';
     return;
   }
-  const nextLabel = firstMissingIdx === -1 ? 'tất cả 7 round đã đầy đủ (sẽ hoàn tất ngay khi khôi phục)' : `sẽ tiếp tục từ <b>${roundMeta[firstMissingIdx].label}</b>`;
+  const incomplete = firstIncompleteIdx === -1 ? null : roundMeta[firstIncompleteIdx];
+  if (!incomplete) {
+    btn.disabled = false;
+    hint.innerHTML = '✅ 7/7 round đã gán đủ. Sẽ hoàn tất ngay khi khôi phục.';
+    hint.className = 'recovery-hint rh-ok';
+    return;
+  }
+  const need = providersForRound(incomplete.key);
+  const have = assignedOf(incomplete.key);
+  const missing = need.filter(p => !have.includes(p));
   btn.disabled = false;
-  hint.innerHTML = `✅ ${filled.length}/7 round đã gán. ${nextLabel}.`;
+  if (have.length === 0) {
+    hint.innerHTML = `✅ Các round trước đã đủ. Sẽ tiếp tục từ <b>${incomplete.label}</b> (${need.map(p => names[p] || p).join(', ')}).`;
+  } else {
+    hint.innerHTML = `✅ <b>${incomplete.label}</b>: đã gán ${have.map(p => names[p] || p).join(', ')} (${have.length}/${need.length || '?'}). Sẽ chạy tiếp ${missing.map(p => names[p] || p).join(', ')}, rồi các round sau.`;
+  }
   hint.className = 'recovery-hint rh-ok';
 }
 
@@ -363,6 +420,13 @@ async function doManualResume(){
   const question = $('question').value.trim();
   if (!question) { alert('Nhập câu hỏi gốc.'); return; }
   const payload = { question, mode: $('mode').value, transcript: JSON.parse(JSON.stringify(manualTranscript)) };
+  // #region agent log
+  fetch('http://127.0.0.1:7413/ingest/10d9d826-fa96-48d2-9291-4b72f24b3687',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'8a40bc'},body:JSON.stringify({sessionId:'8a40bc',runId:'pre-fix',hypothesisId:'C',location:'dashboard.js:doManualResume',message:'manual resume payload',data:{roundCounts:Object.fromEntries(Object.keys(payload.transcript||{}).map(k=>[k,Object.keys(payload.transcript[k]||{})])),firstMissingIdx:roundMeta.findIndex(m=>!payload.transcript[m.key]||Object.keys(payload.transcript[m.key]||{}).length===0),questionLen:question.length},timestamp:Date.now()})}).catch(()=>{});
+  // #endregion
+  // #region agent log
+  fetch('http://127.0.0.1:7413/ingest/10d9d826-fa96-48d2-9291-4b72f24b3687',{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify({sessionId:'8a40bc',runId:'post-fix',hypothesisId:'C',location:'dashboard.js:doManualResume:nocors',message:'manual resume payload nocors',data:{roundCounts:Object.fromEntries(Object.keys(payload.transcript||{}).map(k=>[k,Object.keys(payload.transcript[k]||{})])),firstIncompleteIdx:roundMeta.findIndex(m=>!isRoundFull(m.key)),questionLen:question.length},timestamp:Date.now()})}).catch(()=>{});
+  // #endregion
+  chrome.runtime.sendMessage({type:'DEBUG_INGEST', payload:{sessionId:'8a40bc', runId:'post-fix', hypothesisId:'C', location:'dashboard.js:doManualResume:storage', message:'manual resume payload', data:{roundCounts:Object.fromEntries(Object.keys(payload.transcript||{}).map(k=>[k,Object.keys(payload.transcript[k]||{})])), firstIncompleteIdx:roundMeta.findIndex(m=>!isRoundFull(m.key))}}}).catch(()=>{});
   $('manualResumeBtn').disabled = true; $('startBtn').disabled = true; $('resumeBtn').disabled = true; $('recoveryOpenBtn').disabled = true; $('stopBtn').disabled = false;
   setPhase('Đang khôi phục thủ công...');
   const r = await chrome.runtime.sendMessage({type:'MANUAL_RESUME', payload});
@@ -375,3 +439,4 @@ async function doManualResume(){
 setInterval(refresh, 1200);
 scan();
 refresh();
+chrome.runtime.sendMessage({type:'DEBUG_INGEST', payload:{sessionId:'8a40bc', runId:'post-fix', hypothesisId:'H', location:'dashboard.js:load', message:'dashboard loaded'}}).catch(()=>{});

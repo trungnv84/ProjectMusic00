@@ -12,7 +12,8 @@
     "https://grok.com/*",
     "https://x.com/i/grok/*",
     "https://deepseek.com/*",
-    "https://chat.deepseek.com/*"
+    "https://chat.deepseek.com/*",
+    "http://127.0.0.1:7413/*"
   ],
   "background": {
     "service_worker": "background.js",
