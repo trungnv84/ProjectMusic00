@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>AI Council</title>
+  <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+  <header class="topbar">
+    <div><h1>🧠 AI Council</h1><span>5-tab orchestrator</span></div>
+    <div class="actions"><button id="scanBtn">Quét 5 tab</button><button id="stopBtn" class="danger" disabled>Dừng</button></div>
+  </header>
+  <main>
+    <section class="card question-card">
+      <label for="question">Vấn đề cần giải quyết</label>
+      <textarea id="question" rows="7" placeholder="Nhập câu hỏi một lần..."></textarea>
+      <div class="controls"><select id="mode"><option value="fast">Nhanh</option><option value="balanced" selected>Cân bằng</option><option value="deep">Tranh luận sâu</option></select><button id="startBtn" class="primary">🚀 Bắt đầu họp</button></div>
+    </section>
+
+    <section class="grid">
+      <div class="card"><div class="section-title">5 AI đang kết nối</div><div id="providers" class="providers"></div></div>
+      <div class="card"><div class="section-title">Điều phối</div><div id="phase" class="phase">Chưa chạy</div><div id="log" class="log"></div></div>
+    </section>
+
+    <section class="card result-card">
+      <div class="section-title">Kết luận</div>
+      <pre id="result">Chưa có kết quả.</pre>
+    </section>
+
+    <details class="card"><summary>Xem toàn bộ cuộc tranh luận</summary><pre id="transcript"></pre></details>
+  </main>
+  <script src="dashboard.js"></script>
+</body>
+</html>
