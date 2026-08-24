@@ -1,9 +1,26 @@
 (() => {
   if (window.__AI_COUNCIL_ADAPTER__) return;
   const sleep = ms => new Promise(r => setTimeout(r, ms));
-  const visible = el => el && !!(el.offsetWidth || el.offsetHeight || el.getClientRects().length);
-  const first = selectors => selectors.flatMap(s => [...document.querySelectorAll(s)]).find(visible) || null;
-  const allText = selectors => selectors.flatMap(s => [...document.querySelectorAll(s)]).filter(visible).map(x => (x.innerText || '').trim()).filter(Boolean);
+  const isHiddenByStyle = el => {
+    if (!el || !el.isConnected) return true;
+    const cs = window.getComputedStyle(el);
+    if (!cs) return false;
+    return cs.display === 'none' || cs.visibility === 'hidden' || parseFloat(cs.opacity || '1') === 0;
+  };
+  const visible = el => {
+    if (!el || !el.isConnected) return false;
+    if (el.offsetWidth || el.offsetHeight || el.getClientRects().length) return true;
+    return !isHiddenByStyle(el);
+  };
+  const first = selectors => {
+    const candidates = selectors.flatMap(s => [...document.querySelectorAll(s)]);
+    return candidates.find(visible) || candidates.find(el => el && el.isConnected && !isHiddenByStyle(el)) || null;
+  };
+  const allText = selectors => selectors
+    .flatMap(s => [...document.querySelectorAll(s)])
+    .filter(el => el && el.isConnected && !isHiddenByStyle(el))
+    .map(x => (x.innerText || '').trim())
+    .filter(Boolean);
   async function run(prompt, timeoutMs) {
     const input = first(['textarea#prompt-textarea', 'textarea[placeholder*="Message"]', 'textarea[placeholder*="Ask"]', 'div[contenteditable="true"]']);
     if (!input) return { ok: false, error: 'ChatGPT: không tìm thấy ô nhập.' };
@@ -33,5 +50,25 @@
     }
     return { ok: false, error: 'ChatGPT: hết thời gian chờ câu trả lời.' };
   }
-  window.__AI_COUNCIL_ADAPTER__ = { run };
+  function peekLastAnswer() {
+    try {
+      const arr = allText(['[data-message-author-role="assistant"]']);
+      const text = arr[arr.length - 1] || '';
+      if (text.length > 40) return { ok: true, recovered: true, text };
+      return { ok: false, recovered: false };
+    } catch (_) { return { ok: false, recovered: false }; }
+  }
+  function peekAllMessages() {
+    try {
+      const arr = allText(['[data-message-author-role="assistant"]']);
+      return {
+        ok: true,
+        provider: 'chatgpt',
+        candidates: arr
+          .map((t, i) => ({ index: i, text: t, length: t.length }))
+          .filter(c => c.length > 20)
+      };
+    } catch (_) { return { ok: false, candidates: [] }; }
+  }
+  window.__AI_COUNCIL_ADAPTER__ = { run, peekLastAnswer, peekAllMessages };
 })();

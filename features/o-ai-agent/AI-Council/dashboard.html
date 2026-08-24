@@ -15,7 +15,33 @@
     <section class="card question-card">
       <label for="question">Vấn đề cần giải quyết</label>
       <textarea id="question" rows="7" placeholder="Nhập câu hỏi một lần..."></textarea>
-      <div class="controls"><select id="mode"><option value="fast">Nhanh</option><option value="balanced" selected>Cân bằng</option><option value="deep">Tranh luận sâu</option></select><button id="startBtn" class="primary">🚀 Bắt đầu họp</button></div>
+      <div class="controls">
+        <select id="mode"><option value="fast">Nhanh</option><option value="balanced" selected>Cân bằng</option><option value="deep">Tranh luận sâu</option></select>
+        <button id="startBtn" class="primary">🚀 Bắt đầu họp</button>
+        <button id="resumeBtn" class="resume" disabled>⏯ Tiếp tục từ chỗ dừng</button>
+        <button id="recoveryOpenBtn" class="recovery">🛠 Khôi phục thủ công</button>
+      </div>
+      <div id="resumeHint" class="resume-hint" style="display:none"></div>
+    </section>
+
+    <section id="recoveryPanel" class="card recovery-panel" style="display:none">
+      <div class="recovery-header">
+        <div class="section-title" style="margin-bottom:0">🛠 Khôi phục thủ công (khi checkpoint không có)</div>
+        <button id="recoveryCloseBtn" class="close-btn" title="Đóng">×</button>
+      </div>
+      <div class="recovery-intro">
+        Tự đọc toàn bộ nội dung từ 5 tab AI, sau đó <b>chọn thủ công</b> message nào thuộc Round X của AI nào.
+        Cứ điền vào những round bạn đã có kết quả, những round còn thiếu sẽ được hệ thống chạy tiếp.
+      </div>
+      <div class="recovery-controls">
+        <button id="snapshotBtn" class="primary">🔍 Quét nội dung 5 tab AI</button>
+        <div id="snapshotStatus" class="snapshot-status"></div>
+      </div>
+      <div id="roundBuilder" class="round-builder"></div>
+      <div class="recovery-footer">
+        <button id="manualResumeBtn" class="resume" disabled>✅ Khôi phục & Tiếp tục chạy</button>
+        <div id="recoveryHint" class="recovery-hint"></div>
+      </div>
     </section>
 
     <section class="grid">

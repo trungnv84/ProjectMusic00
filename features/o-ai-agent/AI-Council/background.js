@@ -28,6 +28,25 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         sendResponse({ ok: true });
         return;
       }
+      if (message.type === 'RESUME_COUNCIL') {
+        const result = await orchestrator.resume();
+        sendResponse({ ok: true, result });
+        return;
+      }
+      if (message.type === 'CAN_RESUME') {
+        sendResponse({ ok: true, canResume: await orchestrator.canResume() });
+        return;
+      }
+      if (message.type === 'RECOVER_SNAPSHOT') {
+        const snapshots = await orchestrator.scanAllSnapshots();
+        sendResponse({ ok: true, snapshots });
+        return;
+      }
+      if (message.type === 'MANUAL_RESUME') {
+        const result = await orchestrator.resumeManual(message.payload || {});
+        sendResponse({ ok: true, result });
+        return;
+      }
       if (message.type === 'GET_STATE') {
         sendResponse({ ok: true, state: await orchestrator.getState() });
         return;
