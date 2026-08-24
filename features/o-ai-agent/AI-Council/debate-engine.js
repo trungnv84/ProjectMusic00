@@ -105,16 +105,7 @@ export class DebateEngine {
       return await window.__AI_COUNCIL_ADAPTER__.run(input.prompt, input.timeoutMs);
     }, [{ prompt, timeoutMs: 120000 }]);
 
-    // #region agent log
-    try {
-      const stored = await chrome.storage.local.get('debug8a40bc');
-      const arr = Array.isArray(stored.debug8a40bc) ? stored.debug8a40bc : [];
-      arr.push({ sessionId: '8a40bc', runId: 'post-fix', hypothesisId: 'F', location: 'debate-engine.js:ask', message: 'ask result shape', data: { provider: tab.provider, resultType: result == null ? String(result) : typeof result, ok: Boolean(result && result.ok), err: result && result.error ? String(result.error).slice(0, 160) : null, textLen: result && result.text ? result.text.length : 0 }, timestamp: Date.now() });
-      await chrome.storage.local.set({ debug8a40bc: arr.slice(-50) });
-    } catch (_) { void _; }
-    // #endregion
-
-    if (!result?.ok) throw new Error(result?.error || `Không đọc được kết quả từ ${tab.provider} (result=${result == null ? 'null' : typeof result})`);
+    if (!result?.ok) throw new Error(result?.error || `Không đọc được kết quả từ ${tab.provider}`);
     return result.text;
   }
 

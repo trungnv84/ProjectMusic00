@@ -15,30 +15,56 @@ const ROUND_LABELS = {
   final: 'ROUND 7 - FINAL JUDGE'
 };
 
-function neededProvidersForRound(roundKey, roles) {
-  if (roundKey === 'round5' || roundKey === 'final') return roles?.judge ? [roles.judge] : ['chatgpt'];
-  if (roundKey === 'redTeam') return roles?.redTeam ? [roles.redTeam] : ['claude'];
-  return ALL_PROVIDERS;
+function neededProvidersForRound(roundKey, roles, skipped = []) {
+  const skip = new Set(skipped || []);
+  if (roundKey === 'round5' || roundKey === 'final') {
+    let judge = roles?.judge || 'chatgpt';
+    if (skip.has(judge)) judge = ALL_PROVIDERS.find((p) => !skip.has(p)) || judge;
+    return [judge];
+  }
+  if (roundKey === 'redTeam') {
+    let red = roles?.redTeam || 'claude';
+    const judge = roles?.judge || 'chatgpt';
+    if (skip.has(red)) red = ALL_PROVIDERS.find((p) => !skip.has(p) && p !== judge) || red;
+    return [red];
+  }
+  return ALL_PROVIDERS.filter((p) => !skip.has(p));
 }
 
-function isRoundComplete(roundVal, roundKey, roles) {
-  const needed = neededProvidersForRound(roundKey, roles);
+const MIN_ANSWER_LEN = 400;
+
+function isQuotaError(msg) {
+  const m = String(msg || '').toLowerCase();
+  return /quota|rate limit|too many request|usage limit|hết lượt|hết token|limit reached|try again later|overloaded|out of messages|upgrade to|you've reached|you have reached|capacity/.test(m);
+}
+
+function isRoundComplete(roundVal, roundKey, roles, skipped = []) {
+  const needed = neededProvidersForRound(roundKey, roles, skipped);
   if (!roundVal || typeof roundVal !== 'object' || needed.length === 0) return false;
-  return needed.every((p) => roundVal[p] && String(roundVal[p]).trim().length > 0);
+  return needed.every((p) => roundVal[p] && String(roundVal[p]).trim().length >= MIN_ANSWER_LEN);
 }
 
-async function agentIngest(payload) {
-  const entry = { sessionId: '8a40bc', timestamp: Date.now(), ...payload };
-  try {
-    const stored = await chrome.storage.local.get('debug8a40bc');
-    const arr = Array.isArray(stored.debug8a40bc) ? stored.debug8a40bc : [];
-    arr.push(entry);
-    await chrome.storage.local.set({ debug8a40bc: arr.slice(-50) });
-  } catch (_) { void _; }
-  try {
-    await fetch('http://127.0.0.1:7413/ingest/10d9d826-fa96-48d2-9291-4b72f24b3687', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': '8a40bc' }, body: JSON.stringify(entry), keepalive: true });
-  } catch (_) { void _; }
+function stripWeakAndTrailingRounds(transcript, roles, skipped = []) {
+  const out = { ...transcript };
+  let seenIncomplete = false;
+  for (const key of ROUND_KEYS) {
+    if (seenIncomplete) {
+      delete out[key];
+      continue;
+    }
+    if (out[key] && typeof out[key] === 'object') {
+      const cleaned = {};
+      for (const [p, t] of Object.entries(out[key])) {
+        if (String(t || '').trim().length >= MIN_ANSWER_LEN) cleaned[p] = t;
+      }
+      if (Object.keys(cleaned).length) out[key] = cleaned;
+      else delete out[key];
+    }
+    if (!isRoundComplete(out[key], key, roles, skipped)) seenIncomplete = true;
+  }
+  return out;
 }
+
 
 export class Orchestrator {
   constructor() {
@@ -67,13 +93,66 @@ export class Orchestrator {
     this.persist({ status: 'stopped' }).catch(() => {});
   }
 
+  async recoverIfStale() {
+    const stored = await chrome.storage.local.get('councilState');
+    const s = stored.councilState;
+    if (s) this.state = { ...s };
+    const stale = Boolean(s && s.status === 'running' && !this.running);
+    const roles = s?.assignments;
+    const skipped = s?.skippedProviders || [];
+    const fakeComplete = Boolean(s && s.status === 'completed' && ROUND_KEYS.some((k) => !isRoundComplete(s.transcript?.[k], k, roles, skipped)));
+    if (stale) {
+      await this.persist({ status: 'stopped' });
+      await this.log('⏸ Cuộc họp bị gián đoạn (reload extension). Nhấn [⏯ Tiếp tục từ chỗ dừng] để chạy tiếp các tab còn thiếu.');
+    } else if (fakeComplete) {
+      const cleaned = stripWeakAndTrailingRounds(s.transcript || {}, roles, skipped);
+      const firstIncomplete = ROUND_KEYS.find((k) => !isRoundComplete(cleaned[k], k, roles, skipped));
+      const checkpoint = firstIncomplete ? { roundKey: firstIncomplete, done: Object.keys(cleaned[firstIncomplete] || {}) } : null;
+      await this.persist({ status: 'stopped', transcript: cleaned, checkpoint, final: null });
+      await this.log('⚠ Lần resume trước lấy nhầm tin nhắn cũ (câu trả lời quá ngắn). Đã gỡ kết quả giả. Nhấn [⏯ Tiếp tục từ chỗ dừng] để gửi lại prompt cho tab còn thiếu.');
+    }
+    return stale || fakeComplete;
+  }
+
   async canResume() {
     const s = await this.getState();
     if (!s || !s.question) return false;
-    if (s.status === 'completed') return false;
     const hasWork = (s.transcript && Object.keys(s.transcript).length > 0) || (s.checkpoint && s.checkpoint.roundKey);
     if (!hasWork) return false;
-    return (s.status === 'error' || s.status === 'stopped' || s.status === 'idle');
+    if (s.status === 'completed') {
+      const roles = s.assignments;
+      return ROUND_KEYS.some((k) => !isRoundComplete(s.transcript?.[k], k, roles, s.skippedProviders || []));
+    }
+    const staleRunning = s.status === 'running' && !this.running;
+    return (s.status === 'error' || s.status === 'stopped' || s.status === 'idle' || staleRunning);
+  }
+
+  async skipMissingAndContinue() {
+    if (this.running) throw new Error('Một cuộc họp đang chạy.');
+    const prev = await this.getState();
+    if (!prev?.question) throw new Error('Không có cuộc họp để tiếp tục.');
+    this.state = { ...prev };
+    const roles = prev.assignments || {};
+    const skipped = new Set(prev.skippedProviders || []);
+    const transcript = stripWeakAndTrailingRounds(prev.transcript || {}, roles, [...skipped]);
+    const firstIncomplete = ROUND_KEYS.find((k) => !isRoundComplete(transcript[k], k, roles, [...skipped]));
+    if (!firstIncomplete) throw new Error('Không còn tab thiếu để bỏ qua.');
+    const needed = neededProvidersForRound(firstIncomplete, roles, [...skipped]);
+    const have = new Set(Object.keys(transcript[firstIncomplete] || {}));
+    const failedKeys = Object.keys(prev.checkpoint?.failed || {}).filter((p) => needed.includes(p) && !have.has(p));
+    const missing = failedKeys.length ? failedKeys : needed.filter((p) => !have.has(p));
+    if (missing.length === 0) throw new Error('Không còn tab thiếu trong round hiện tại.');
+    for (const p of missing) skipped.add(p);
+    const skippedArr = [...skipped];
+    await this.persist({
+      status: 'stopped',
+      transcript,
+      skippedProviders: skippedArr,
+      checkpoint: { roundKey: firstIncomplete, done: Object.keys(transcript[firstIncomplete] || {}) },
+      error: null
+    });
+    await this.log(`⏭ Bỏ qua (hết quota/lỗi): ${missing.join(', ')}. Hội đồng chạy tiếp không có các tab này.`);
+    return this.resume();
   }
 
   async start(question, mode = 'balanced') {
@@ -93,7 +172,8 @@ export class Orchestrator {
       endedAt: null,
       error: null,
       final: null,
-      checkpoint: null
+      checkpoint: null,
+      skippedProviders: []
     });
 
     try {
@@ -124,12 +204,16 @@ export class Orchestrator {
     if (this.running) throw new Error('Một cuộc họp đang chạy.');
     const prev = await this.getState();
     if (!prev?.question) throw new Error('Không có tiến độ nào để tiếp tục. Hãy bắt đầu mới.');
-    if (prev.status === 'completed') throw new Error('Cuộc họp trước đã hoàn tất. Hãy bắt đầu mới.');
-
-    const checkpoint = prev.checkpoint || null;
-    const transcript = prev.transcript || {};
     const tabs = prev.tabs || (await scanProviderTabs());
     const roles = prev.assignments || chooseRoles(prev.question, tabs.map((x) => x.provider));
+    const skipped = prev.skippedProviders || [];
+    const transcript = stripWeakAndTrailingRounds(prev.transcript || {}, roles, skipped);
+    const firstIncomplete = ROUND_KEYS.find((k) => !isRoundComplete(transcript[k], k, roles, skipped));
+    if (prev.status === 'completed' && !firstIncomplete) throw new Error('Cuộc họp trước đã hoàn tất. Hãy bắt đầu mới.');
+
+    const checkpoint = firstIncomplete
+      ? { roundKey: firstIncomplete, done: Object.keys(transcript[firstIncomplete] || {}) }
+      : (prev.checkpoint || null);
 
     if (tabs.length < 5) throw new Error(`Cần đủ 5 tab AI. Hiện có: ${tabs.map(x => x.provider).join(', ') || '0'}.`);
 
@@ -151,7 +235,8 @@ export class Orchestrator {
       assignments: roles,
       tabs,
       final: prev.final || null,
-      checkpoint
+      checkpoint,
+      skippedProviders: skipped
     });
 
     try {
@@ -181,23 +266,20 @@ export class Orchestrator {
   }
 
   async scanAllSnapshots() {
+    if (this.running) throw new Error('Cuộc họp đang chạy. Đừng quét nội dung lúc này — sẽ làm gián đoạn các tab AI.');
     const tabs = await scanProviderTabs();
     if (tabs.length < 5) throw new Error(`Cần đủ 5 tab AI. Hiện có: ${tabs.map(x => x.provider).join(', ') || '0'}.`);
-    await agentIngest({ runId: 'post-fix', hypothesisId: 'H', location: 'orchestrator.js:scanAllSnapshots:start', message: 'scan start', data: { providers: tabs.map(t => t.provider) } });
     await this.debate.saveFocus();
     const out = [];
     for (const tab of tabs) {
       const snap = await this.debate.recoverSnapshot(tab);
-      await agentIngest({ runId: 'post-fix', hypothesisId: 'H', location: 'orchestrator.js:scanAllSnapshots:tab', message: 'scan tab done', data: { provider: tab.provider, ok: !!snap.ok, candidates: (snap.candidates || []).length, error: snap.error || null } });
       out.push(snap);
     }
     await this.debate.focusDashboard();
-    await agentIngest({ runId: 'post-fix', hypothesisId: 'H', location: 'orchestrator.js:scanAllSnapshots:end', message: 'scan complete', data: { tabs: out.map(s => ({ provider: s.provider, ok: s.ok, n: (s.candidates || []).length })) } });
     return out;
   }
 
   async resumeManual(payload) {
-    await agentIngest({ runId: 'post-fix', hypothesisId: 'A', location: 'orchestrator.js:resumeManual:enter', message: 'resumeManual entered', data: { running: this.running, hasPayload: !!payload, roundCounts: Object.fromEntries(Object.keys((payload && payload.transcript) || {}).map(k => [k, Object.keys(payload.transcript[k] || {})])) } });
     if (this.running) throw new Error('Một cuộc họp đang chạy.');
     if (!payload) throw new Error('Thiếu payload khôi phục thủ công.');
     const question = String(payload.question || '').trim();
@@ -223,21 +305,12 @@ export class Orchestrator {
       }
     }
 
-    const firstMissing = ROUND_KEYS.find(k => !transcript[k]);
     const firstIncomplete = ROUND_KEYS.find(k => !isRoundComplete(transcript[k], k, roles));
     const resumeCheckpoint = firstIncomplete
       ? { roundKey: firstIncomplete, done: Object.keys(transcript[firstIncomplete] || {}) }
       : null;
-    // #region agent log
-    fetch('http://127.0.0.1:7413/ingest/10d9d826-fa96-48d2-9291-4b72f24b3687',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'8a40bc'},body:JSON.stringify({sessionId:'8a40bc',runId:'pre-fix',hypothesisId:'A',location:'orchestrator.js:resumeManual',message:'checkpoint from partial transcript',data:{transcriptCounts:Object.fromEntries(ROUND_KEYS.map(k=>[k,transcript[k]?Object.keys(transcript[k]):[]])),firstMissing,resumeCheckpoint},timestamp:Date.now()})}).catch(()=>{});
-    // #endregion
-    // #region agent log
-    fetch('http://127.0.0.1:7413/ingest/10d9d826-fa96-48d2-9291-4b72f24b3687',{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify({sessionId:'8a40bc',runId:'post-fix',hypothesisId:'A',location:'orchestrator.js:resumeManual:complete',message:'partial round checkpoint',data:{firstMissing,firstIncomplete,resumeCheckpoint,complete:Object.fromEntries(ROUND_KEYS.map(k=>[k,isRoundComplete(transcript[k],k,roles)]))},timestamp:Date.now()})}).catch(()=>{});
-    // #endregion
-    await agentIngest({ runId: 'post-fix', hypothesisId: 'A', location: 'orchestrator.js:resumeManual:storage', message: 'partial round checkpoint storage', data: { firstMissing, firstIncomplete, resumeCheckpoint, complete: Object.fromEntries(ROUND_KEYS.map(k => [k, isRoundComplete(transcript[k], k, roles)])) } });
 
     this.running = true;
-    this.skipAutoRecover = true;
     await this.debate.saveFocus();
     const entryMsg = `🛠 KHÔI PHỤC THỦ CÔNG: ${Object.keys(transcript).length}/7 round đã được user gán kết quả.`;
     const logStart = [
@@ -281,7 +354,6 @@ export class Orchestrator {
       throw error;
     } finally {
       this.running = false;
-      this.skipAutoRecover = false;
       await this.debate.focusDashboard();
     }
   }
@@ -291,19 +363,13 @@ export class Orchestrator {
 
     const startIdx = resumeCheckpoint?.roundKey ? ROUND_KEYS.indexOf(resumeCheckpoint.roundKey) : 0;
     const effectiveStart = startIdx === -1 ? 0 : startIdx;
-    // #region agent log
-    fetch('http://127.0.0.1:7413/ingest/10d9d826-fa96-48d2-9291-4b72f24b3687',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'8a40bc'},body:JSON.stringify({sessionId:'8a40bc',runId:'pre-fix',hypothesisId:'B',location:'orchestrator.js:runAllRounds',message:'round skip plan',data:{startIdx,effectiveStart,checkpoint:resumeCheckpoint||null,willRun:{round1:effectiveStart===0&&!transcript.round1,round2:effectiveStart<=1&&!transcript.round2,round3:effectiveStart<=2&&!transcript.round3,round4:effectiveStart<=3&&!transcript.round4,round5:effectiveStart<=4&&!transcript.round5,redTeam:effectiveStart<=5&&!transcript.redTeam,final:effectiveStart<=6&&!transcript.final},counts:Object.fromEntries(ROUND_KEYS.map(k=>[k,transcript[k]?Object.keys(transcript[k]):[]]))},timestamp:Date.now()})}).catch(()=>{});
-    // #endregion
-    const roundComplete = (key) => isRoundComplete(transcript[key], key, roles);
+    const skipped = this.state.skippedProviders || [];
+    const roundComplete = (key) => isRoundComplete(transcript[key], key, roles, skipped);
     const doneFor = (key) => {
       const fromCk = (resumeCheckpoint && resumeCheckpoint.roundKey === key) ? (resumeCheckpoint.done || []) : [];
       const fromTx = Object.keys(transcript[key] || {});
       return [...new Set([...fromCk, ...fromTx])];
     };
-    // #region agent log
-    fetch('http://127.0.0.1:7413/ingest/10d9d826-fa96-48d2-9291-4b72f24b3687',{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify({sessionId:'8a40bc',runId:'post-fix',hypothesisId:'B',location:'orchestrator.js:runAllRounds:complete',message:'incomplete rounds will run',data:{checkpoint:resumeCheckpoint||null,willRunIncomplete:Object.fromEntries(ROUND_KEYS.map(k=>[k,!roundComplete(k)])),doneFor:Object.fromEntries(ROUND_KEYS.map(k=>[k,doneFor(k)]))},timestamp:Date.now()})}).catch(()=>{});
-    // #endregion
-    await agentIngest({ runId: 'post-fix', hypothesisId: 'B', location: 'orchestrator.js:runAllRounds:storage', message: 'incomplete rounds will run', data: { checkpoint: resumeCheckpoint || null, willRunIncomplete: Object.fromEntries(ROUND_KEYS.map(k => [k, !roundComplete(k)])), doneFor: Object.fromEntries(ROUND_KEYS.map(k => [k, doneFor(k)])) } });
 
     if (!roundComplete('round1')) {
       if (!transcript.round1 && effectiveStart > 0) throw new Error('Không có kết quả Round 1 trong transcript, không thể resume.');
@@ -343,32 +409,34 @@ export class Orchestrator {
     }
 
     const judgePrompt = buildFinalJudgePrompt(question, transcript.round1, transcript.round2, transcript.round3, transcript.round4);
+    const judgeId = neededProvidersForRound('round5', roles, skipped)[0] || roles.judge;
 
     if (!roundComplete('round5')) {
       transcript.round5 = await this.runRoundWithCheckpoint('round5',
-        { [roles.judge]: judgePrompt },
+        { [judgeId]: judgePrompt },
         tabs,
         doneFor('round5')
       );
       if (!this.running) return transcript;
     }
 
-    const redPrompt = buildRedTeamPrompt(question, transcript.round5?.[roles.judge] || '');
+    const redPrompt = buildRedTeamPrompt(question, transcript.round5?.[judgeId] || transcript.round5?.[roles.judge] || '');
+    const redId = neededProvidersForRound('redTeam', roles, skipped)[0] || roles.redTeam;
 
     if (!roundComplete('redTeam')) {
       transcript.redTeam = await this.runRoundWithCheckpoint('redTeam',
-        { [roles.redTeam]: redPrompt },
+        { [redId]: redPrompt },
         tabs,
         doneFor('redTeam')
       );
       if (!this.running) return transcript;
     }
 
-    const finalPrompt = `${judgePrompt}\n\n=== RED TEAM ===\n${transcript.redTeam?.[roles.redTeam] || ''}\n\nHãy xem xét phản biện Red Team. Nếu cần hãy thay đổi quyết định. Nếu không cần, giải thích vì sao. Đưa ra phiên bản quyết định cuối cùng.`;
+    const finalPrompt = `${judgePrompt}\n\n=== RED TEAM ===\n${transcript.redTeam?.[redId] || transcript.redTeam?.[roles.redTeam] || ''}\n\nHãy xem xét phản biện Red Team. Nếu cần hãy thay đổi quyết định. Nếu không cần, giải thích vì sao. Đưa ra phiên bản quyết định cuối cùng.`;
 
     if (!roundComplete('final')) {
       transcript.final = await this.runRoundWithCheckpoint('final',
-        { [roles.judge]: finalPrompt },
+        { [judgeId]: finalPrompt },
         tabs,
         doneFor('final')
       );
@@ -385,7 +453,12 @@ export class Orchestrator {
     const done = new Set(alreadyDoneProviders || []);
     const outputs = {};
     const existing = this.state.transcript?.[roundKey] || {};
-    for (const p of Object.keys(existing)) { if (existing[p]) { outputs[p] = existing[p]; done.add(p); } }
+    for (const p of Object.keys(existing)) {
+      if (existing[p] && String(existing[p]).trim().length >= MIN_ANSWER_LEN) {
+        outputs[p] = existing[p];
+        done.add(p);
+      }
+    }
     if (Object.keys(outputs).length > 0) {
       await this.persist({
         transcript: { ...this.state.transcript, [roundKey]: outputs },
@@ -393,27 +466,15 @@ export class Orchestrator {
       });
     }
 
-    const neededTabs = tabs.filter(t => prompts[t.provider]);
+    const skipped = this.state.skippedProviders || [];
+    const neededTabs = tabs.filter(t => prompts[t.provider] && !skipped.includes(t.provider));
     const failed = {};
-    // #region agent log
-    fetch('http://127.0.0.1:7413/ingest/10d9d826-fa96-48d2-9291-4b72f24b3687',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'8a40bc'},body:JSON.stringify({sessionId:'8a40bc',runId:'pre-fix',hypothesisId:'E',location:'orchestrator.js:runRoundWithCheckpoint:entry',message:'round tab plan',data:{roundKey,alreadyDoneProviders:alreadyDoneProviders||[],existingKeys:Object.keys(existing),needed:neededTabs.map(t=>t.provider),promptKeys:Object.keys(prompts||{})},timestamp:Date.now()})}).catch(()=>{});
-    // #endregion
-    // #region agent log
-    fetch('http://127.0.0.1:7413/ingest/10d9d826-fa96-48d2-9291-4b72f24b3687',{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify({sessionId:'8a40bc',runId:'post-fix',hypothesisId:'E',location:'orchestrator.js:runRoundWithCheckpoint:entry:nocors',message:'round tab plan nocors',data:{roundKey,skipAutoRecover:!!this.skipAutoRecover,alreadyDoneProviders:alreadyDoneProviders||[],existingKeys:Object.keys(existing),needed:neededTabs.map(t=>t.provider)},timestamp:Date.now()})}).catch(()=>{});
-    // #endregion
-    await agentIngest({ runId: 'post-fix', hypothesisId: 'E', location: 'orchestrator.js:runRoundWithCheckpoint:storage', message: 'round tab plan', data: { roundKey, skipAutoRecover: !!this.skipAutoRecover, alreadyDoneProviders: alreadyDoneProviders || [], existingKeys: Object.keys(existing), needed: neededTabs.map(t => t.provider) } });
 
     for (const tab of neededTabs) {
       if (!this.running) throw new Error('Đã dừng cuộc họp.');
       const provider = tab.provider;
 
       if (done.has(provider) && outputs[provider]) {
-        // #region agent log
-        fetch('http://127.0.0.1:7413/ingest/10d9d826-fa96-48d2-9291-4b72f24b3687',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'8a40bc'},body:JSON.stringify({sessionId:'8a40bc',runId:'pre-fix',hypothesisId:'E',location:'orchestrator.js:runRoundWithCheckpoint:skip',message:'skip already done tab',data:{roundKey,provider,outputLen:(outputs[provider]||'').length},timestamp:Date.now()})}).catch(()=>{});
-        // #endregion
-        // #region agent log
-        fetch('http://127.0.0.1:7413/ingest/10d9d826-fa96-48d2-9291-4b72f24b3687',{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify({sessionId:'8a40bc',runId:'post-fix',hypothesisId:'E',location:'orchestrator.js:runRoundWithCheckpoint:skip:nocors',message:'skip already done tab nocors',data:{roundKey,provider},timestamp:Date.now()})}).catch(()=>{});
-        // #endregion
         await this.log(`↩ ${provider}: Đã có kết quả trước đó, bỏ qua.`);
         continue;
       }
@@ -421,29 +482,9 @@ export class Orchestrator {
       let success = false;
       let lastErr = null;
 
-      const recovered = this.skipAutoRecover
-        ? { recovered: false }
-        : await this.debate.tryRecoverLastResponse(tab);
-      if (recovered.recovered && recovered.text && outputs[provider] !== recovered.text) {
-        // #region agent log
-        fetch('http://127.0.0.1:7413/ingest/10d9d826-fa96-48d2-9291-4b72f24b3687',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'8a40bc'},body:JSON.stringify({sessionId:'8a40bc',runId:'pre-fix',hypothesisId:'D',location:'orchestrator.js:runRoundWithCheckpoint:recover',message:'auto-recovered leftover tab text',data:{roundKey,provider,textLen:(recovered.text||'').length},timestamp:Date.now()})}).catch(()=>{});
-        // #endregion
-        outputs[provider] = recovered.text;
-        done.add(provider);
-        await this.log(`♻ ${provider}: Đã đọc lại nội dung có sẵn trên tab (không gửi lại prompt).`);
-        await this.persist({
-          transcript: { ...this.state.transcript, [roundKey]: outputs },
-          checkpoint: { roundKey, done: Object.keys(outputs) }
-        });
-        continue;
-      }
-
       for (let attempt = 1; attempt <= 2 && !success; attempt++) {
         try {
           await this.log(`→ ${provider}: gửi nhiệm vụ${attempt > 1 ? ` (lần ${attempt}/2)` : ''}.`);
-          // #region agent log
-          fetch('http://127.0.0.1:7413/ingest/10d9d826-fa96-48d2-9291-4b72f24b3687',{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify({sessionId:'8a40bc',runId:'post-fix',hypothesisId:'E',location:'orchestrator.js:runRoundWithCheckpoint:ask',message:'sending prompt to remaining tab',data:{roundKey,provider,attempt,skipAutoRecover:!!this.skipAutoRecover},timestamp:Date.now()})}).catch(()=>{});
-          // #endregion
           outputs[provider] = await this.debate.ask(tab, prompts[provider]);
           done.add(provider);
           await this.log(`← ${provider}: nhận kết quả.`);
@@ -455,12 +496,20 @@ export class Orchestrator {
         } catch (err) {
           lastErr = err instanceof Error ? err.message : String(err);
           await this.log(`⚠ ${provider}: Lỗi lần ${attempt}/2 — ${lastErr}`);
+          if (isQuotaError(lastErr)) {
+            await this.log(`⛔ ${provider}: Có vẻ hết lượt/quota free — không thử lại ngay.`);
+            break;
+          }
           if (attempt < 2) await new Promise(r => setTimeout(r, 1200));
         }
       }
 
       if (!success) {
         failed[provider] = lastErr || 'Không rõ lỗi';
+        await this.persist({
+          transcript: { ...this.state.transcript, [roundKey]: outputs },
+          checkpoint: { roundKey, done: Object.keys(outputs), failed: { ...(this.state.checkpoint?.failed || {}), ...failed } }
+        });
       }
     }
 
@@ -472,7 +521,10 @@ export class Orchestrator {
         : `Các tab bị lỗi: ${failList}.`;
       throw new Error(
         `${label}: ${Object.keys(failed).length} tab AI không chạy xong. ${hint}\n` +
-        `👉 CÁCH CHẠY TIẾP: Chỉ cần đóng alert này rồi nhấn nút [⏯ TIẾP TỤC / RESUME]. Các tab ĐÃ XONG sẽ ĐƯỢC BỎ QUA, chỉ các tab bị lỗi mới được chạy lại.`
+        (Object.values(failed).some(isQuotaError)
+          ? `⛔ Có tab hết lượt free/quota. Đợi reset rồi nhấn [⏯ TIẾP TỤC], hoặc nhấn [⏭ Bỏ qua tab lỗi] để chạy tiếp với các AI còn lại.\n`
+          : '') +
+        `👉 CÁCH CHẠY TIẾP: Đóng alert này rồi nhấn [⏯ TIẾP TỤC / RESUME] (thử lại tab lỗi) hoặc [⏭ Bỏ qua tab lỗi]. Các tab ĐÃ XONG sẽ được bỏ qua.`
       );
     }
 

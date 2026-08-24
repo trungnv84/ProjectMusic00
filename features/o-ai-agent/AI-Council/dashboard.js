@@ -18,6 +18,7 @@ const previewSelection = {};
 $('scanBtn').addEventListener('click', scan);
 $('startBtn').addEventListener('click', start);
 $('resumeBtn').addEventListener('click', resume);
+$('skipQuotaBtn').addEventListener('click', skipQuota);
 $('stopBtn').addEventListener('click', async () => { await chrome.runtime.sendMessage({type:'STOP_COUNCIL'}); await refresh(); });
 $('recoveryOpenBtn').addEventListener('click', () => { $('recoveryPanel').style.display = $('recoveryPanel').style.display === 'none' ? 'block' : 'none'; buildRoundBuilder(); });
 $('recoveryCloseBtn').addEventListener('click', () => { $('recoveryPanel').style.display = 'none'; });
@@ -35,7 +36,7 @@ async function start(){
   const question = $('question').value.trim();
   if(!question){ alert('Hãy nhập câu hỏi.'); return; }
   if (!confirm('Bắt đầu cuộc họp mới sẽ xóa toàn bộ tiến độ cũ. Tiếp tục?')) return;
-  $('startBtn').disabled = true; $('resumeBtn').disabled = true; $('recoveryOpenBtn').disabled = true; $('manualResumeBtn').disabled = true; $('stopBtn').disabled = false;
+  $('startBtn').disabled = true; $('resumeBtn').disabled = true; $('skipQuotaBtn').disabled = true; $('recoveryOpenBtn').disabled = true; $('manualResumeBtn').disabled = true; $('stopBtn').disabled = false;
   setPhase('Đang bắt đầu...');
   const r = await chrome.runtime.sendMessage({type:'START_COUNCIL', question, mode:$('mode').value});
   if(!r.ok){ setPhase('Lỗi'); alert(r.error); }
@@ -43,8 +44,22 @@ async function start(){
   $('stopBtn').disabled = true; $('recoveryOpenBtn').disabled = false;
 }
 
+async function skipQuota(){
+  const st = await chrome.runtime.sendMessage({type:'GET_STATE'});
+  const s = (st && st.state) || {};
+  const failed = Object.keys((s.checkpoint && s.checkpoint.failed) || {});
+  const who = (failed.length ? failed : ['các tab còn thiếu']).map(p => names[p] || p).join(', ');
+  if (!confirm(`Bỏ qua ${who} (hết quota/lỗi) và chạy tiếp với các AI còn lại?\nTab đang chạy dở (chưa fail) sẽ KHÔNG bị bỏ qua.`)) return;
+  $('startBtn').disabled = true; $('resumeBtn').disabled = true; $('skipQuotaBtn').disabled = true; $('recoveryOpenBtn').disabled = true; $('manualResumeBtn').disabled = true; $('stopBtn').disabled = false;
+  setPhase('Đang bỏ qua tab lỗi và chạy tiếp...');
+  const r = await chrome.runtime.sendMessage({type:'SKIP_AND_CONTINUE'});
+  if(!r.ok){ setPhase('Lỗi bỏ qua tab'); alert(r.error); await refresh(); $('stopBtn').disabled = true; $('recoveryOpenBtn').disabled = false; return; }
+  await refresh();
+  $('stopBtn').disabled = true; $('recoveryOpenBtn').disabled = false;
+}
+
 async function resume(){
-  $('startBtn').disabled = true; $('resumeBtn').disabled = true; $('recoveryOpenBtn').disabled = true; $('manualResumeBtn').disabled = true; $('stopBtn').disabled = false;
+  $('startBtn').disabled = true; $('resumeBtn').disabled = true; $('skipQuotaBtn').disabled = true; $('recoveryOpenBtn').disabled = true; $('manualResumeBtn').disabled = true; $('stopBtn').disabled = false;
   setPhase('Đang khôi phục tiến độ...');
   const r = await chrome.runtime.sendMessage({type:'RESUME_COUNCIL'});
   if(!r.ok){ setPhase('Lỗi Resume'); alert(r.error); await refresh(); $('stopBtn').disabled = true; $('recoveryOpenBtn').disabled = false; return; }
@@ -82,12 +97,15 @@ function describeProgress(s){
       info += `\n   • Cần chạy lại trong round này: ${missingList}`;
     }
   }
+  if (s.skippedProviders && s.skippedProviders.length) {
+    info += `\nĐã bỏ qua (hết quota/lỗi): ${(s.skippedProviders).map(p => names[p] || p).join(', ')}`;
+  }
   if (s.error) info += `\nLỗi trước đó: ${s.error}`;
   if (ck && s.status !== 'running' && s.status !== 'completed') {
     info += `\n👉 LÀM SAO ĐỂ CHẠY TIẾP:`;
-    info += `\n   1. Kiểm tra các tab AI còn thiếu (refresh, đăng nhập lại nếu cần).`;
-    info += `\n   2. Nhấn nút [⏯ TIẾP TỤC / RESUME].`;
-    info += `\n   3. Hệ thống sẽ BỎ QUA các tab đã xong, CHỈ chạy lại các tab bị lỗi/thiếu, rồi tự động tiếp tục các round sau.`;
+    info += `\n   1. Nếu tab hết quota: đợi reset, refresh tab đó, rồi nhấn [⏯ TIẾP TỤC].`;
+    info += `\n   2. Nếu không đợi được: nhấn [⏭ Bỏ qua tab lỗi] để chạy nốt với các AI còn lại.`;
+    info += `\n   3. Tab đã xong sẽ được bỏ qua; chỉ tab thiếu mới được hỏi lại (trừ khi đã bỏ qua).`;
   }
   return info;
 }
@@ -112,12 +130,13 @@ async function refresh(){
   const can = await chrome.runtime.sendMessage({type:'CAN_RESUME'});
   const canResume = !running && can && can.ok && can.canResume;
   $('resumeBtn').disabled = !canResume;
+  $('skipQuotaBtn').disabled = !canResume;
 
   const hint = $('resumeHint');
   if (canResume) {
     const desc = describeProgress(s);
     hint.style.display = 'block';
-    hint.innerHTML = `<b>⏯ Có thể tiếp tục:</b><br>${escapeHtml(desc).replace(/\n/g,'<br>')}<br><small style="opacity:.75">Các tab AI đã có nội dung sẽ được đọc lại tự động thay vì gửi lại prompt.</small>`;
+    hint.innerHTML = `<b>⏯ Có thể tiếp tục:</b><br>${escapeHtml(desc).replace(/\n/g,'<br>')}<br><small style="opacity:.75">Tab đã có kết quả đủ dài sẽ được bỏ qua. Các tab còn thiếu sẽ được gửi prompt mới (không lấy tin nhắn cũ trên tab).</small>`;
     if (s.question) $('question').value = s.question;
   } else if (s.status === 'completed') {
     hint.style.display = 'block';
@@ -182,7 +201,6 @@ function escapeHtml(s){ return String(s).replace(/[&<>'"]/g,c=>({'&':'&amp;','<'
 async function scanSnapshots(){
   $('snapshotStatus').innerHTML = '<span class="snapshot-working">🔄 Đang quét 5 tab... (sẽ lần lượt mở từng tab lên phía trước)</span>';
   $('snapshotBtn').disabled = true;
-  chrome.runtime.sendMessage({type:'DEBUG_INGEST', payload:{sessionId:'8a40bc', runId:'post-fix', hypothesisId:'H', location:'dashboard.js:scanSnapshots', message:'scan clicked'}}).catch(()=>{});
   try {
     const r = await chrome.runtime.sendMessage({type:'RECOVER_SNAPSHOT'});
     if (!r.ok) throw new Error(r.error || 'Quét thất bại.');
@@ -315,7 +333,6 @@ function onCandidateSelect(e){
     ta.value = txt;
     if (!manualTranscript[roundKey]) manualTranscript[roundKey] = {};
     manualTranscript[roundKey][provider] = txt;
-    chrome.runtime.sendMessage({type:'DEBUG_INGEST', payload:{sessionId:'8a40bc', runId:'post-fix', hypothesisId:'C', location:'dashboard.js:onCandidateSelect', message:'selected message', data:{roundKey, provider, textLen: txt.length}}}).catch(()=>{});
   } else {
     if (manualTranscript[roundKey]) delete manualTranscript[roundKey][provider];
   }
@@ -420,13 +437,6 @@ async function doManualResume(){
   const question = $('question').value.trim();
   if (!question) { alert('Nhập câu hỏi gốc.'); return; }
   const payload = { question, mode: $('mode').value, transcript: JSON.parse(JSON.stringify(manualTranscript)) };
-  // #region agent log
-  fetch('http://127.0.0.1:7413/ingest/10d9d826-fa96-48d2-9291-4b72f24b3687',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'8a40bc'},body:JSON.stringify({sessionId:'8a40bc',runId:'pre-fix',hypothesisId:'C',location:'dashboard.js:doManualResume',message:'manual resume payload',data:{roundCounts:Object.fromEntries(Object.keys(payload.transcript||{}).map(k=>[k,Object.keys(payload.transcript[k]||{})])),firstMissingIdx:roundMeta.findIndex(m=>!payload.transcript[m.key]||Object.keys(payload.transcript[m.key]||{}).length===0),questionLen:question.length},timestamp:Date.now()})}).catch(()=>{});
-  // #endregion
-  // #region agent log
-  fetch('http://127.0.0.1:7413/ingest/10d9d826-fa96-48d2-9291-4b72f24b3687',{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify({sessionId:'8a40bc',runId:'post-fix',hypothesisId:'C',location:'dashboard.js:doManualResume:nocors',message:'manual resume payload nocors',data:{roundCounts:Object.fromEntries(Object.keys(payload.transcript||{}).map(k=>[k,Object.keys(payload.transcript[k]||{})])),firstIncompleteIdx:roundMeta.findIndex(m=>!isRoundFull(m.key)),questionLen:question.length},timestamp:Date.now()})}).catch(()=>{});
-  // #endregion
-  chrome.runtime.sendMessage({type:'DEBUG_INGEST', payload:{sessionId:'8a40bc', runId:'post-fix', hypothesisId:'C', location:'dashboard.js:doManualResume:storage', message:'manual resume payload', data:{roundCounts:Object.fromEntries(Object.keys(payload.transcript||{}).map(k=>[k,Object.keys(payload.transcript[k]||{})])), firstIncompleteIdx:roundMeta.findIndex(m=>!isRoundFull(m.key))}}}).catch(()=>{});
   $('manualResumeBtn').disabled = true; $('startBtn').disabled = true; $('resumeBtn').disabled = true; $('recoveryOpenBtn').disabled = true; $('stopBtn').disabled = false;
   setPhase('Đang khôi phục thủ công...');
   const r = await chrome.runtime.sendMessage({type:'MANUAL_RESUME', payload});
@@ -439,4 +449,3 @@ async function doManualResume(){
 setInterval(refresh, 1200);
 scan();
 refresh();
-chrome.runtime.sendMessage({type:'DEBUG_INGEST', payload:{sessionId:'8a40bc', runId:'post-fix', hypothesisId:'H', location:'dashboard.js:load', message:'dashboard loaded'}}).catch(()=>{});
