@@ -60,7 +60,7 @@ export function chooseRoles(question, providers) {
 const SUCCINCT_RULE = `
 
 === NGẮN GỌN & TIẾT KIỆM TOKEN ===
-TOÀN BỘ TRẢ LỜI ≤ 250 TỪ. KHÔNG dùng chào hỏi, không dùng disclaimer kiểu "tôi là AI", không lặp lại câu hỏi.
+TOÀN BỘ TRẢ LỜI ≤ 300 TỪ. KHÔNG dùng chào hỏi, không dùng disclaimer kiểu "tôi là AI", không lặp lại câu hỏi.
 - Dùng BULLET LIST (- hoặc •) thay vì đoạn văn dài.
 - Mỗi ý 1-2 câu, TIN GỌN, ĐỦ Ý.
 - Ưu tiên từ khóa + kết luận; bỏ qua filler words ("do đó", "như vậy", "tóm lại",...).

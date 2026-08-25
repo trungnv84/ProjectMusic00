@@ -12,6 +12,7 @@ const roundMeta = [
 ];
 let lastScanResult = [];
 let lastSnapshots = [];
+let lastRenderedStateKey = '';
 const manualTranscript = {};
 const previewSelection = {};
 
@@ -24,6 +25,40 @@ $('recoveryOpenBtn').addEventListener('click', () => { $('recoveryPanel').style.
 $('recoveryCloseBtn').addEventListener('click', () => { $('recoveryPanel').style.display = 'none'; });
 $('snapshotBtn').addEventListener('click', scanSnapshots);
 $('manualResumeBtn').addEventListener('click', doManualResume);
+$('copyLogBtn').addEventListener('click', () => copySectionText('copyLogBtn', $('log').innerText || ''));
+$('copyResultBtn').addEventListener('click', () => copySectionText('copyResultBtn', $('result').textContent || ''));
+$('copyTranscriptBtn').addEventListener('click', (event) => {
+  event.stopPropagation();
+  copySectionText('copyTranscriptBtn', $('transcript').textContent || '');
+});
+
+async function copySectionText(buttonId, text){
+  const button = $(buttonId);
+  const originalLabel = button.getAttribute('aria-label');
+  try {
+    await navigator.clipboard.writeText(text);
+  } catch (_) {
+    const helper = document.createElement('textarea');
+    helper.value = text;
+    helper.setAttribute('readonly', '');
+    helper.style.position = 'fixed';
+    helper.style.opacity = '0';
+    document.body.appendChild(helper);
+    helper.select();
+    document.execCommand('copy');
+    helper.remove();
+  }
+  button.classList.add('copied');
+  button.textContent = '✓';
+  button.setAttribute('aria-label', 'Đã copy');
+  button.title = 'Đã copy';
+  setTimeout(() => {
+    button.classList.remove('copied');
+    button.textContent = '⧉';
+    button.setAttribute('aria-label', originalLabel);
+    button.title = originalLabel;
+  }, 1200);
+}
 
 async function scan(){
   const r = await chrome.runtime.sendMessage({type:'SCAN_TABS'});
@@ -114,6 +149,21 @@ async function refresh(){
   const r = await chrome.runtime.sendMessage({type:'GET_STATE'});
   if(!r.ok) return;
   const s = r.state || {};
+  const stateKey = JSON.stringify({
+    status: s.status,
+    phase: s.phase,
+    question: s.question,
+    final: s.final,
+    error: s.error,
+    transcript: s.transcript,
+    log: s.log,
+    tabs: s.tabs,
+    assignments: s.assignments,
+    checkpoint: s.checkpoint,
+    skippedProviders: s.skippedProviders
+  });
+  if (stateKey === lastRenderedStateKey) return;
+  lastRenderedStateKey = stateKey;
   renderProviders(s.tabs || lastScanResult);
   setPhase(s.phase || s.status || 'Chưa chạy');
   $('result').textContent = s.final || (s.error ? `ERROR: ${s.error}` : 'Chưa có kết quả.');

@@ -36,7 +36,7 @@ const MIN_ANSWER_LEN = 120; // Succinct mode: AI trả lời ngắn hơn (≥250
 
 function isQuotaError(msg) {
   const m = String(msg || '').toLowerCase();
-  return /quota|rate limit|too many request|usage limit|hết lượt|hết token|limit reached|try again later|overloaded|out of messages|upgrade to|you've reached|you have reached|capacity/.test(m);
+  return /quota|rate limit|too many request|usage limit|hết lượt|hết token|limit reached|try again later|overloaded|out of messages|upgrade to|you've reached|you have reached|capacity|daily limit|hourly limit|messages this hour|reach(ed)? the cap|pro only|premium only|subscribe to|x premium|slow down|temporarily unable|request limit|something went wrong|we're experiencing high demand/.test(m);
 }
 
 function isRoundComplete(roundVal, roundKey, roles, skipped = []) {
