@@ -105,8 +105,42 @@ export class DebateEngine {
       return await window.__AI_COUNCIL_ADAPTER__.run(input.prompt, input.timeoutMs);
     }, [{ prompt, timeoutMs: 120000 }]);
 
-    if (!result?.ok) throw new Error(result?.error || `Không đọc được kết quả từ ${tab.provider}`);
-    return result.text;
+    if (result?.ok) {
+      if (result.recovered) {
+        try {
+          await this.orchestrator.log(`⤴ ${tab.provider}: chấp nhận kết quả khôi phục (${result.note || 'timeout fallback'}).`);
+        } catch (_) { void _; }
+      }
+      return result.text;
+    }
+
+    // ⭐ Fallback #1: re-activate tab (trường hợp user/tab switch làm innerText rỗng)
+    try { await this.activateTab(tab.id); } catch (_) { void _; }
+    await sleep(800);
+    try {
+      await this.ensureAdapter(tab, 1);
+    } catch (_) { void _; }
+    const retryVisible = await this.executeInTab(tab, async () => {
+      if (!window.__AI_COUNCIL_ADAPTER__ || typeof window.__AI_COUNCIL_ADAPTER__.peekLastAnswer !== 'function') return null;
+      return window.__AI_COUNCIL_ADAPTER__.peekLastAnswer();
+    }, []).catch(() => null);
+    if (retryVisible && retryVisible.ok && retryVisible.recovered && retryVisible.text && retryVisible.text.length > 120) {
+      try {
+        await this.orchestrator.log(`⤴ ${tab.provider}: adapter báo lỗi (${result?.error || '?'}), RE-ACTIVATE tab rồi lấy được bài cuối (${retryVisible.text.length} chữ). Dùng kết quả này.`);
+      } catch (_) { void _; }
+      return retryVisible.text;
+    }
+
+    // Fallback #2: tryRecoverLastResponse (cơ chế cũ, vẫn chạy)
+    const recovery = await this.tryRecoverLastResponse(tab);
+    if (recovery && recovery.recovered && recovery.text && recovery.text.length > 80) {
+      try {
+        await this.orchestrator.log(`⤴ ${tab.provider}: adapter báo lỗi (${result?.error || '?'}), đã khôi phục được bài cuối từ tab (${recovery.text.length} chữ). Dùng kết quả này.`);
+      } catch (_) { void _; }
+      return recovery.text;
+    }
+
+    throw new Error(result?.error || `Không đọc được kết quả từ ${tab.provider} (dù đã thử re-activate tab).`);
   }
 
   async tryRecoverLastResponse(tab) {

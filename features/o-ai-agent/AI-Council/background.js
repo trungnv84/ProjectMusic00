@@ -3,6 +3,7 @@ import { scanAllTabsWithProviderInfo } from './tab-controller.js';
 
 const orchestrator = new Orchestrator();
 orchestrator.recoverIfStale().catch(() => {});
+orchestrator.startAutoResumePolling();
 
 chrome.runtime.onInstalled.addListener(async () => {
   const stored = await chrome.storage.local.get('councilState');
@@ -10,6 +11,7 @@ chrome.runtime.onInstalled.addListener(async () => {
     await chrome.storage.local.set({ councilState: { status: 'idle', updatedAt: Date.now() } });
   }
   await orchestrator.recoverIfStale();
+  orchestrator.startAutoResumePolling();
 });
 
 chrome.action.onClicked.addListener(async () => {

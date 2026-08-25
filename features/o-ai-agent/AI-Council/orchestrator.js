@@ -14,6 +14,7 @@ const ROUND_LABELS = {
   redTeam: 'ROUND 6 - RED TEAM',
   final: 'ROUND 7 - FINAL JUDGE'
 };
+const MAX_AUTO_RESUME_PER_COUNCIL = 3; // Giới hạn tự động resume để tránh loop vô hạn
 
 function neededProvidersForRound(roundKey, roles, skipped = []) {
   const skip = new Set(skipped || []);
@@ -31,7 +32,7 @@ function neededProvidersForRound(roundKey, roles, skipped = []) {
   return ALL_PROVIDERS.filter((p) => !skip.has(p));
 }
 
-const MIN_ANSWER_LEN = 400;
+const MIN_ANSWER_LEN = 120; // Succinct mode: AI trả lời ngắn hơn (≥250 từ đề nghị nhưng cho phép 120+ để đảm bảo round hoàn tất)
 
 function isQuotaError(msg) {
   const m = String(msg || '').toLowerCase();
@@ -66,11 +67,60 @@ function stripWeakAndTrailingRounds(transcript, roles, skipped = []) {
 }
 
 
+function seededShuffle(arr, seed = Date.now()) {
+  let s = seed || 1;
+  const rand = () => { s = (s * 9301 + 49297) % 233280; return s / 233280; };
+  const out = [...arr];
+  for (let i = out.length - 1; i > 0; i--) {
+    const j = Math.floor(rand() * (i + 1));
+    [out[i], out[j]] = [out[j], out[i]];
+  }
+  return out;
+}
+
 export class Orchestrator {
   constructor() {
     this.running = false;
     this.state = { status: 'idle', phase: null, log: [], transcript: {}, startedAt: null, endedAt: null, error: null };
     this.debate = new DebateEngine(this);
+    this._autoResumeTimer = null;
+    this._autoResumeCount = 0;
+  }
+
+  startAutoResumePolling() {
+    if (this._autoResumeTimer) return;
+    this._autoResumeTimer = setInterval(async () => {
+      try { await this.attemptAutoResumeIfStale(); } catch (_) { void _; }
+    }, 15000); // Mỗi 15s kiểm tra 1 lần
+  }
+
+  stopAutoResumePolling() {
+    if (this._autoResumeTimer) { clearInterval(this._autoResumeTimer); this._autoResumeTimer = null; }
+  }
+
+  async attemptAutoResumeIfStale() {
+    if (this.running) return;
+    if (this._autoResumeCount >= MAX_AUTO_RESUME_PER_COUNCIL) return;
+    const s = await this.getState();
+    if (!s || !s.checkpoint || !s.checkpoint.failed || Object.keys(s.checkpoint.failed).length === 0) return;
+    if (s.status === 'completed') return;
+    if (s.autoResumeDone) return;
+    const neededForRound = s.assignments ? neededProvidersForRound(s.checkpoint.roundKey, s.assignments, s.skippedProviders || []) : [];
+    const failedButNeeded = Object.keys(s.checkpoint.failed).filter(p => neededForRound.includes(p) || neededForRound.length === 0);
+    if (failedButNeeded.length === 0) return;
+    try {
+      const tabs = await scanProviderTabs();
+      if (tabs.length < 5) return;
+      const failed = s.checkpoint.failed || {};
+      const quotaFaileds = Object.entries(failed).filter(([p, msg]) => isQuotaError(msg) || !msg).map(([p]) => p);
+      if (quotaFaileds.length === 0) {
+        // Không phải quota → thử lại 1 lần nếu user không can thiệp
+        this._autoResumeCount++;
+        await this.log(`🔄 Tự động thử lại ${failedButNeeded.join(', ')} (không phải quota)...`);
+        await this.persist({ autoResumeDone: false });
+        await this.resume();
+      }
+    } catch (_) { void _; }
   }
 
   async getState() {
@@ -467,7 +517,21 @@ export class Orchestrator {
     }
 
     const skipped = this.state.skippedProviders || [];
-    const neededTabs = tabs.filter(t => prompts[t.provider] && !skipped.includes(t.provider));
+    // Lấy speaking order từ assignments nếu có, fallback seed question
+    const order = (this.state.assignments && this.state.assignments.speakingOrder && this.state.assignments.speakingOrder.length) || [];
+    const seed = this.state.question ? Array.from(this.state.question).reduce((a, c) => a + c.charCodeAt(0), 0) ^ (roundKey.length * 7) : Date.now();
+    const shuffledOrder = order.length ? order : seededShuffle(ALL_PROVIDERS, seed + roundKey.length);
+    const tabByProvider = new Map(tabs.map(t => [t.provider, t]));
+    const orderedNeeded = [];
+    for (const provider of shuffledOrder) {
+      const t = tabByProvider.get(provider);
+      if (t && prompts[provider] && !skipped.includes(provider)) orderedNeeded.push(t);
+    }
+    // Thêm những tab còn lại mà prompts có nhưng chưa vào list (phòng trường hợp speaking order thiếu)
+    tabs.forEach(t => {
+      if (prompts[t.provider] && !skipped.includes(t.provider) && !orderedNeeded.includes(t)) orderedNeeded.push(t);
+    });
+    const neededTabs = orderedNeeded;
     const failed = {};
 
     for (const tab of neededTabs) {
@@ -505,11 +569,28 @@ export class Orchestrator {
       }
 
       if (!success) {
-        failed[provider] = lastErr || 'Không rõ lỗi';
-        await this.persist({
-          transcript: { ...this.state.transcript, [roundKey]: outputs },
-          checkpoint: { roundKey, done: Object.keys(outputs), failed: { ...(this.state.checkpoint?.failed || {}), ...failed } }
-        });
+        const quotaHit = isQuotaError(lastErr || '');
+        let recovered = null;
+        if (!quotaHit) {
+          try {
+            recovered = await this.debate.tryRecoverLastResponse(tab);
+          } catch (_) { recovered = null; }
+        }
+        if (recovered && recovered.recovered && recovered.text && recovered.text.length >= MIN_ANSWER_LEN) {
+          outputs[provider] = recovered.text;
+          done.add(provider);
+          await this.log(`⤴ ${provider}: 2 lần lỗi (${lastErr || '?'}), KHÔI PHỤC được bài cuối từ tab (${recovered.text.length} chữ). Đánh dấu thành công.`);
+          await this.persist({
+            transcript: { ...this.state.transcript, [roundKey]: outputs },
+            checkpoint: { roundKey, done: Object.keys(outputs) }
+          });
+        } else {
+          failed[provider] = lastErr || 'Không rõ lỗi';
+          await this.persist({
+            transcript: { ...this.state.transcript, [roundKey]: outputs },
+            checkpoint: { roundKey, done: Object.keys(outputs), failed: { ...(this.state.checkpoint?.failed || {}), ...failed } }
+          });
+        }
       }
     }
 

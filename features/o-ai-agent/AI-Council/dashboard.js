@@ -121,11 +121,14 @@ async function refresh(){
   $('log').innerHTML = (s.log || []).map(x => `<div>[${new Date(x.at).toLocaleTimeString()}] ${escapeHtml(x.message)}</div>`).join('');
   $('log').scrollTop = $('log').scrollHeight;
 
-  const running = s.status === 'running';
+    const running = s.status === 'running';
   $('stopBtn').disabled = !running;
   $('startBtn').disabled = running;
   $('recoveryOpenBtn').disabled = running;
   $('question').disabled = running;
+  if (running || (s.checkpoint && s.checkpoint.failed && Object.keys(s.checkpoint.failed).length > 0)) {
+    setTimeout(() => renderProviders(s.tabs || lastScanResult), 50);
+  }
 
   const can = await chrome.runtime.sendMessage({type:'CAN_RESUME'});
   const canResume = !running && can && can.ok && can.canResume;
@@ -157,22 +160,35 @@ function updateScanSummary(){
   }
 }
 
-function renderProviders(tabs){
+async function renderProviders(tabs){
   const map = Object.fromEntries((tabs||[]).filter(t=>t.provider).map(t => [t.provider, t]));
+  const r = await chrome.runtime.sendMessage({type:'GET_STATE'});
+  const s = (r && r.ok && r.state) ? r.state : {};
+  const assignments = s.assignments || {};
+  const judge = assignments.judge;
+  const redTeam = assignments.redTeam;
+  const speakingOrder = assignments.speakingOrder;
   $('providers').innerHTML = `
     <div id="scanSummary" class="scan-summary"></div>
     ${order.map(p => {
       const t = map[p];
+      const badges = [];
+      if (p === judge) badges.push('<span style="background:#3459d5;border:1px solid #4a72f3;border-radius:6px;padding:1px 6px;font-size:10px;font-weight:800;margin-left:4px">👨‍⚖️ JUDGE</span>');
+      if (p === redTeam) badges.push('<span style="background:#b34700;border:1px solid #f2a84a;border-radius:6px;padding:1px 6px;font-size:10px;font-weight:800;margin-left:4px">⚔️ RED TEAM</span>');
+      if (speakingOrder && speakingOrder.length) {
+        const idx = speakingOrder.indexOf(p);
+        if (idx >= 0) badges.push(`<span style="opacity:.55;font-size:10px;margin-left:4px">#${idx+1} phát biểu</span>`);
+      }
       return `
       <div class="provider">
-        <div class="name">${names[p]}</div>
+        <div class="name">${names[p]}${badges.join('')}</div>
         <div class="status ${t ? 'online' : 'offline'}">
           ${t ? '● Đã tìm thấy' : '○ Chưa có tab'}
         </div>
         ${t ? `
           <div class="tab-info">
-            <div class="tab-url" title="${escapeHtml(t.url)}">${escapeHtml(t.url.slice(0,45))}</div>
-            <div class="tab-title">${escapeHtml((t.title||'').slice(0,40))}</div>
+            <div class="tab-url" title="${escapeHtml(t.url)}">${escapeHtml(t.url.slice(0,55))}</div>
+            <div class="tab-title" title="${escapeHtml(t.title||'')}">${escapeHtml((t.title||'').slice(0,50))}</div>
           </div>
         ` : `
           <div class="hint">Mở tab <b>${getExpectedUrl(p)}</b></div>
