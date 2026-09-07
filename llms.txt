@@ -1,0 +1,29 @@
+# ProjectMusic00 — LLM entry
+
+> Canonical AI handbook (read first):
+> https://raw.githubusercontent.com/<owner>/<repo>/<branch>/docs/m-guide/for-ai.md
+
+## Core
+
+- docs/m-guide/for-ai.md — operating handbook for AIs
+- docs/m-guide/catalog.yml — machine-readable page index
+- docs/m-guide/pipeline/overview.md — 4-step composition pipeline
+- docs/m-guide/meta/standards.md — writing & admission standards
+- docs/m-guide/meta/link-scheme.md — how to build GitHub URLs from paths
+
+## Function 1 — Compose
+
+- docs/m-guide/pipeline/step-01-meta-prompt.md
+- docs/m-guide/pipeline/step-02-specialized-prompts.md
+- docs/m-guide/pipeline/step-03-compose.md
+- docs/m-guide/pipeline/step-04-arrange.md
+- docs/m-guide/prompt-craft/README.md
+
+## Function 2 — Self-upgrade
+
+- docs/m-guide/prompts/curator.md
+- docs/m-guide/prompts/improver.md
+
+## Do not use for composition
+
+- archive/

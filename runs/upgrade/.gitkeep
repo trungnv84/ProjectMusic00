@@ -1,0 +1,2 @@
+# Keep this directory for upgrade runs (proposed patches).
+# Each run: runs/upgrade/YYYY-MM-DD-slug/
