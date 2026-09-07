@@ -1,0 +1,19 @@
+# Upgrade STATUS
+- type: curator
+- topic: Bổ sung thanh điệu tiếng Việt chi tiết + thẻ phong cách ballad V-Pop + anti-pattern MusicXML còn thiếu
+- status: merged
+- merged_at: "2026-09-07"
+- merge_note: "Merged bản đã chỉnh (REVIEW.md), không copy nguyên proposed. Parallel motion & #9/#12 anti-pattern → hint. Bỏ nguồn Suno. curator.md đã cải tiến."
+- proposed_files:
+  - docs/m-guide/knowledge/vietnamese/tone-melody.md (update)
+  - docs/m-guide/knowledge/styles/vn-vpop-ballad.md (add)
+  - docs/m-guide/knowledge/musicxml/anti-patterns.md (update)
+  - docs/m-guide/catalog.yml (update)
+  - docs/m-guide/prompts/curator.md (process improve — outside original proposed)
+- needs-approval: true
+- sources_checked:
+  - https://cs.nyu.edu/~nhan/full_paper_vs2.032p1_02.pdf
+  - https://www.research.ed.ac.uk/en/publications/tone-melody-correspondence-in-vietnamese-popular-song/
+  - https://forums.steinberg.net/t/issues-with-musicxml-export/895215
+  - https://musescore.org/en/comment/1138937
+  - https://musescore.org/en/comment/1221926

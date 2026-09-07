@@ -40,7 +40,9 @@ Trang chỉ được thêm nếu giúp **ít nhất một**:
 | **constraint** | Bắt buộc khi sáng tác / xuất XML | `midi-program` ∈ 1–128; không duration 0 |
 | **hint** | Gợi ý, có thể bỏ nếu xung đột yêu cầu user | BPM ballad thường 65–80 |
 
-Hint **không** được viết như luật. Đổi constraint mới = đề xuất `needs-approval` cho đến khi user chốt (khi merge).
+Hint **không** được viết như luật. Đổi constraint mới = đề xuất `needs_approval` cho đến khi user chốt (khi merge).
+
+**Mặc định từ web:** xu hướng nghiên cứu / thống kê corpus / “thường gặp” → **hint**. Chỉ nâng **constraint** khi là XML well-formed, schema-hard, hoặc user đã chốt.
 
 ## Frontmatter bắt buộc
 
