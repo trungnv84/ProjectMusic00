@@ -1,0 +1,203 @@
+# Catalog — mục lục máy đọc được
+
+# Quy tắc:
+# - path tính từ root repo
+# - tags: compose | arrange | musicxml | lyrics | melody | harmony | rhythm-form | vocal | vietnamese | style | pipeline | meta | prompt
+# - AI dựng URL: REPO_RAW + "/" + path (xem meta/link-scheme.md)
+# - Cấm path dưới archive/
+
+version: "1.2"
+updated: "2026-09-07"
+
+pages:
+  - id: META.PURPOSE
+    path: docs/m-guide/meta/purpose.md
+    tags: [meta]
+    serves-steps: [1, 2, 3, 4]
+    summary: Mục đích hai chức năng của kho
+
+  - id: META.STANDARDS
+    path: docs/m-guide/meta/standards.md
+    tags: [meta]
+    serves-steps: [1, 2, 3, 4]
+    summary: Quy chuẩn nhận trang, constraint vs hint
+
+  - id: META.PAGE-TEMPLATE
+    path: docs/m-guide/meta/page-template.md
+    tags: [meta]
+    serves-steps: [1, 2, 3, 4]
+    summary: Template trang knowledge
+
+  - id: META.LINK-SCHEME
+    path: docs/m-guide/meta/link-scheme.md
+    tags: [meta, github]
+    serves-steps: [1, 2, 3, 4]
+    summary: Dựng URL GitHub từ path
+
+  - id: META.ARCHIVE-POLICY
+    path: docs/m-guide/meta/archive-policy.md
+    tags: [meta]
+    serves-steps: [1, 2, 3, 4]
+    summary: Archive không dùng sáng tác
+
+  - id: META.SONG-REQUEST-SCHEMA
+    path: docs/m-guide/meta/song-request-schema.md
+    tags: [meta, compose]
+    serves-steps: [2, 3, 4]
+    summary: Schema yêu cầu bài hát dùng chung
+
+  - id: PIPE.OVERVIEW
+    path: docs/m-guide/pipeline/overview.md
+    tags: [pipeline]
+    serves-steps: [1, 2, 3, 4]
+    summary: Tổng quan 4 bước
+
+  - id: PIPE.STEP-01
+    path: docs/m-guide/pipeline/step-01-meta-prompt.md
+    tags: [pipeline]
+    serves-steps: [1]
+    summary: Playbook Bước 1 meta-prompt
+
+  - id: PIPE.STEP-02
+    path: docs/m-guide/pipeline/step-02-specialized-prompts.md
+    tags: [pipeline]
+    serves-steps: [2]
+    summary: Playbook Bước 2 hai prompt + DOC_REFS
+
+  - id: PIPE.STEP-03
+    path: docs/m-guide/pipeline/step-03-compose.md
+    tags: [pipeline, compose]
+    serves-steps: [3]
+    summary: Playbook Bước 3 MusicXML lead sheet
+
+  - id: PIPE.STEP-04
+    path: docs/m-guide/pipeline/step-04-arrange.md
+    tags: [pipeline, arrange]
+    serves-steps: [4]
+    summary: Playbook Bước 4 MusicXML phối khí
+
+  - id: PIPE.MERGE-POLICY
+    path: docs/m-guide/pipeline/merge-policy.md
+    tags: [pipeline]
+    serves-steps: [1, 2, 3, 4]
+    summary: Merge proposed vào kho gốc chỉ khi user yêu cầu
+
+  - id: CRAFT.README
+    path: docs/m-guide/prompt-craft/README.md
+    tags: [prompt-craft]
+    serves-steps: [1]
+    summary: Guide prompt craft Bước 1
+
+  - id: CRAFT.PRINCIPLES
+    path: docs/m-guide/prompt-craft/principles.md
+    tags: [prompt-craft]
+    serves-steps: [1]
+    summary: Nguyên tắc meta-prompt
+
+  - id: CRAFT.OUTPUT-CONTRACT
+    path: docs/m-guide/prompt-craft/output-contract.md
+    tags: [prompt-craft]
+    serves-steps: [1]
+    summary: Hợp đồng đầu ra meta-prompt
+
+  - id: KNOW.LYRICS.CRAFT
+    path: docs/m-guide/knowledge/lyrics/craft.md
+    tags: [compose, lyrics]
+    serves-steps: [3]
+    summary: Viết lời, tứ thơ, hook
+
+  - id: KNOW.MELODY.CONTOUR
+    path: docs/m-guide/knowledge/melody/contour.md
+    tags: [compose, melody]
+    serves-steps: [3]
+    summary: Contour và motif giai điệu
+
+  - id: KNOW.HARMONY.BASICS
+    path: docs/m-guide/knowledge/harmony/basics.md
+    tags: [compose, harmony]
+    serves-steps: [3, 4]
+    summary: Hòa âm cơ bản cho bài hát
+
+  - id: KNOW.RHYTHM.FORM
+    path: docs/m-guide/knowledge/rhythm-form/form-and-tempo.md
+    tags: [compose, rhythm-form]
+    serves-steps: [3]
+    summary: Tempo, meter, song form
+
+  - id: KNOW.VOCAL.WRITING
+    path: docs/m-guide/knowledge/vocal/writing.md
+    tags: [compose, vocal]
+    serves-steps: [3]
+    summary: Viết bè hát và gắn lyric
+
+  - id: KNOW.VI.TONE-MELODY
+    path: docs/m-guide/knowledge/vietnamese/tone-melody.md
+    tags: [compose, vietnamese, lyrics, melody]
+    serves-steps: [3]
+    summary: Thanh điệu tiếng Việt khớp giai điệu (chi tiết)
+
+  - id: KNOW.VI.RHYME-METER
+    path: docs/m-guide/knowledge/vietnamese/rhyme-meter.md
+    tags: [compose, vietnamese, lyrics]
+    serves-steps: [3]
+    summary: Vần và thể thơ (lục bát, 7 chữ, 8 chữ...) dùng khi viết lời
+
+  - id: KNOW.ARR.ORCHESTRATION
+    path: docs/m-guide/knowledge/arrangement/orchestration.md
+    tags: [arrange, arrangement]
+    serves-steps: [4]
+    summary: Nguyên tắc phối khí layering
+
+  - id: KNOW.ARR.GENRE-TEXTURES
+    path: docs/m-guide/knowledge/arrangement/genre-textures.md
+    tags: [arrange, compose, arrangement]
+    serves-steps: [3, 4]
+    summary: Hint texture theo hướng thể loại
+
+  - id: KNOW.MUSICXML.RULES
+    path: docs/m-guide/knowledge/musicxml/rules.md
+    tags: [compose, arrange, musicxml]
+    serves-steps: [3, 4]
+    summary: Quy tắc xuất MusicXML 4.0
+
+  - id: KNOW.MUSICXML.ANTI-PATTERNS
+    path: docs/m-guide/knowledge/musicxml/anti-patterns.md
+    tags: [compose, arrange, musicxml]
+    serves-steps: [3, 4]
+    summary: Anti-pattern MusicXML cấm (mở rộng)
+
+  - id: STYLE.TEMPLATE
+    path: docs/m-guide/knowledge/styles/_template.md
+    tags: [style]
+    serves-steps: [2, 3, 4]
+    summary: Template thẻ phong cách
+
+  - id: STYLE.VN.HEROIC-MARCH
+    path: docs/m-guide/knowledge/styles/vn-heroic-march.md
+    tags: [style, compose, arrange]
+    serves-steps: [3, 4]
+    summary: Thẻ khái quát hành khúc / khí thế Việt
+
+  - id: STYLE.POP.BALLAD-GENERIC
+    path: docs/m-guide/knowledge/styles/pop-ballad-generic.md
+    tags: [style, compose, arrange]
+    serves-steps: [3, 4]
+    summary: Thẻ khái quát pop ballad
+
+  - id: STYLE.VN.VPOP-BALLAD
+    path: docs/m-guide/knowledge/styles/vn-vpop-ballad.md
+    tags: [style, compose, arrange, vietnamese]
+    serves-steps: [3, 4]
+    summary: Thẻ phong cách ballad V-Pop đương đại
+
+  - id: PROMPT.CURATOR
+    path: docs/m-guide/prompts/curator.md
+    tags: [prompt]
+    serves-steps: [1, 2, 3, 4]
+    summary: Playbook curator bổ sung kho
+
+  - id: PROMPT.IMPROVER
+    path: docs/m-guide/prompts/improver.md
+    tags: [prompt]
+    serves-steps: [1, 2, 3, 4]
+    summary: Playbook improver sau lần chạy hỏng
