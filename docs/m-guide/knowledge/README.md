@@ -4,12 +4,12 @@ Trang kiến thức theo khía cạnh. Mục lục máy: [../catalog.yml](../cat
 
 | Thư mục | Vai trò |
 |---------|---------|
-| lyrics/ | Viết lời |
-| melody/ | Giai điệu |
-| harmony/ | Hòa âm |
-| rhythm-form/ | Nhịp & cấu trúc |
-| vocal/ | Bè hát |
-| vietnamese/ | Thanh điệu & tiếng Việt |
-| arrangement/ | Phối khí |
-| musicxml/ | Xuất & anti-pattern MusicXML |
+| lyrics/ | Viết lời, prosody, rhyme |
+| melody/ | Contour, phrase, cadence |
+| harmony/ | Hòa âm, chức năng, voicing |
+| rhythm-form/ | Form, tempo, groove, syncopation |
+| vocal/ | Bè hát, breath, melisma |
+| vietnamese/ | Thanh điệu, vần/thể thơ, ưu tiên xung đột |
+| arrangement/ | Phối khí, role/register, section energy |
+| musicxml/ | Rules, anti-patterns, structure, lyric XML/encoding, performance markings, checklist |
 | styles/ | Thẻ phong cách (khái quát) |

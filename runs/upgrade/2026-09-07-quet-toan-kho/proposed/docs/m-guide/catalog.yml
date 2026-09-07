@@ -6,7 +6,7 @@
 # - AI dựng URL: REPO_RAW + "/" + path (xem meta/link-scheme.md)
 # - Cấm path dưới archive/
 
-version: "1.3"
+version: "1.2"
 updated: "2026-09-07"
 
 pages:
@@ -106,23 +106,11 @@ pages:
     serves-steps: [3]
     summary: Viết lời, tứ thơ, hook
 
-  - id: KNOW.LYRICS.PROSODY-RHYME
-    path: docs/m-guide/knowledge/lyrics/prosody-and-rhyme.md
-    tags: [compose, lyrics]
-    serves-steps: [3]
-    summary: Prosody, rhyme và trọng âm khi viết lời
-
   - id: KNOW.MELODY.CONTOUR
     path: docs/m-guide/knowledge/melody/contour.md
     tags: [compose, melody]
     serves-steps: [3]
     summary: Contour và motif giai điệu
-
-  - id: KNOW.MELODY.PHRASE-STRUCTURE
-    path: docs/m-guide/knowledge/melody/phrase-structure.md
-    tags: [compose, melody]
-    serves-steps: [3]
-    summary: Phrase, cadence và điểm nhấn giai điệu
 
   - id: KNOW.HARMONY.BASICS
     path: docs/m-guide/knowledge/harmony/basics.md
@@ -130,17 +118,11 @@ pages:
     serves-steps: [3, 4]
     summary: Hòa âm cơ bản cho bài hát
 
-  - id: KNOW.HARMONY.FUNCTIONAL-CADENCE-VOICING
-    path: docs/m-guide/knowledge/harmony/functional-cadence-and-voicing.md
-    tags: [compose, harmony, arrangement]
-    serves-steps: [3, 4]
-    summary: Chức năng hòa âm, cadence và voicing
-
   - id: KNOW.HARMONY.MODULATION
     path: docs/m-guide/knowledge/harmony/modulation.md
     tags: [compose, arrange, harmony]
     serves-steps: [3, 4]
-    summary: Kỹ thuật chuyển giọng trong bài hát
+    summary: Chuyển giọng (direct, pivot chord, chromatic mediant...)
 
   - id: KNOW.RHYTHM.FORM
     path: docs/m-guide/knowledge/rhythm-form/form-and-tempo.md
@@ -148,47 +130,23 @@ pages:
     serves-steps: [3]
     summary: Tempo, meter, song form
 
-  - id: KNOW.RHYTHM.GROOVE-SYNCOPATION
-    path: docs/m-guide/knowledge/rhythm-form/groove-and-syncopation.md
-    tags: [compose, rhythm-form, lyrics, melody]
-    serves-steps: [3]
-    summary: Pulse, groove, syncopation và lyric stress
-
   - id: KNOW.VOCAL.WRITING
     path: docs/m-guide/knowledge/vocal/writing.md
     tags: [compose, vocal]
     serves-steps: [3]
     summary: Viết bè hát và gắn lyric
 
-  - id: KNOW.VOCAL.PHRASING-BREATH-MELISMA
-    path: docs/m-guide/knowledge/vocal/phrasing-breath-and-melisma.md
-    tags: [compose, vocal, lyrics, melody]
-    serves-steps: [3]
-    summary: Phrasing, breath, sustain và melisma
-
   - id: KNOW.VOCAL.BACKING-HARMONIES
     path: docs/m-guide/knowledge/vocal/backing-harmonies.md
     tags: [arrange, vocal]
     serves-steps: [4]
-    summary: Bè hát / backing vocal khi phối khí
+    summary: Phối bè hát (unison, quãng 3/5, call-response, đối âm)
 
   - id: KNOW.VI.TONE-MELODY
     path: docs/m-guide/knowledge/vietnamese/tone-melody.md
     tags: [compose, vietnamese, lyrics, melody]
     serves-steps: [3]
     summary: Thanh điệu tiếng Việt khớp giai điệu (chi tiết)
-
-  - id: KNOW.VI.RHYME-METER
-    path: docs/m-guide/knowledge/vietnamese/rhyme-meter.md
-    tags: [compose, vietnamese, lyrics]
-    serves-steps: [3]
-    summary: Vần và thể thơ tiếng Việt trong lời bài hát
-
-  - id: KNOW.VI.SYLLABLE-PRIORITY
-    path: docs/m-guide/knowledge/vietnamese/syllable-priority.md
-    tags: [compose, vietnamese, lyrics, melody, vocal]
-    serves-steps: [3]
-    summary: Ưu tiên khi âm tiết, thanh điệu và melody xung đột
 
   - id: KNOW.ARR.ORCHESTRATION
     path: docs/m-guide/knowledge/arrangement/orchestration.md
@@ -202,18 +160,6 @@ pages:
     serves-steps: [3, 4]
     summary: Hint texture theo hướng thể loại
 
-  - id: KNOW.ARR.INSTRUMENT-ROLES-REGISTER
-    path: docs/m-guide/knowledge/arrangement/instrument-roles-and-register.md
-    tags: [arrange, arrangement]
-    serves-steps: [4]
-    summary: Phân vai, register và collision giữa các layer
-
-  - id: KNOW.ARR.SECTION-ENERGY
-    path: docs/m-guide/knowledge/arrangement/section-energy.md
-    tags: [arrange, arrangement, compose]
-    serves-steps: [3, 4]
-    summary: Framework energy và density theo section
-
   - id: KNOW.MUSICXML.RULES
     path: docs/m-guide/knowledge/musicxml/rules.md
     tags: [compose, arrange, musicxml]
@@ -226,35 +172,17 @@ pages:
     serves-steps: [3, 4]
     summary: Anti-pattern MusicXML cấm (mở rộng)
 
-  - id: KNOW.MUSICXML.STRUCTURE-VOICES
-    path: docs/m-guide/knowledge/musicxml/structure-and-voices.md
-    tags: [compose, arrange, musicxml]
-    serves-steps: [3, 4]
-    summary: Structure, voices và continuity trong MusicXML
-
-  - id: KNOW.MUSICXML.LYRICS-AND-NOTATIONS
-    path: docs/m-guide/knowledge/musicxml/lyrics-and-notations.md
-    tags: [compose, arrange, musicxml, lyrics, vocal]
-    serves-steps: [3, 4]
-    summary: Lyric alignment và notation semantics
-
   - id: KNOW.MUSICXML.LYRICS-ENCODING
     path: docs/m-guide/knowledge/musicxml/lyrics-encoding.md
     tags: [compose, musicxml, lyrics]
     serves-steps: [3]
-    summary: Cú pháp lyric syllabic / extend / elision trong MusicXML
+    summary: Gắn lời vào nốt — syllabic, extend, elision
 
   - id: KNOW.MUSICXML.PERFORMANCE-MARKINGS
     path: docs/m-guide/knowledge/musicxml/performance-markings.md
     tags: [compose, arrange, musicxml]
     serves-steps: [3, 4]
     summary: Mã hóa dynamics / articulation / phrasing (nhóm PERFORMANCE)
-
-  - id: KNOW.MUSICXML.VALIDATION-CHECKLIST
-    path: docs/m-guide/knowledge/musicxml/validation-checklist.md
-    tags: [compose, arrange, musicxml]
-    serves-steps: [3, 4]
-    summary: Checklist structural và semantic trước khi trả file
 
   - id: STYLE.TEMPLATE
     path: docs/m-guide/knowledge/styles/_template.md

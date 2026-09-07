@@ -2,8 +2,9 @@
 
 - type: curator
 - topic: vần/điệu thơ tiếng Việt trong lời bài hát
-- status: proposed
-- structure_note: "Đã chỉnh path vào proposed/docs/m-guide/ (trước đó file nằm phẳng ở root run)."
+- status: merged
+- merged_at: "2026-09-07"
+- merge_note: "Merged cùng đợt all-topics (status active). Cross-link với KNOW.LYRICS.PROSODY-RHYME."
 - proposed_files:
   - docs/m-guide/knowledge/vietnamese/rhyme-meter.md
   - docs/m-guide/catalog.yml

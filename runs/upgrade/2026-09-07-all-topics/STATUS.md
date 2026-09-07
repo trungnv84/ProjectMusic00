@@ -1,0 +1,22 @@
+# Upgrade STATUS
+- run_id: 2026-09-07-all-topics
+- type: curator
+- topic: all
+- status: merged
+- merged_at: "2026-09-07"
+- merge_note: "Merged cả 11 trang (status active) + cập nhật catalog gốc 1.2. Đồng thời merge KNOW.VI.RHYME-METER từ run van-dieu-tho-viet. Xem EVALUATION.md."
+- proposed_files:
+  - docs/m-guide/knowledge/lyrics/prosody-and-rhyme.md
+  - docs/m-guide/knowledge/melody/phrase-structure.md
+  - docs/m-guide/knowledge/harmony/functional-cadence-and-voicing.md
+  - docs/m-guide/knowledge/rhythm-form/groove-and-syncopation.md
+  - docs/m-guide/knowledge/vocal/phrasing-breath-and-melisma.md
+  - docs/m-guide/knowledge/vietnamese/syllable-priority.md
+  - docs/m-guide/knowledge/arrangement/instrument-roles-and-register.md
+  - docs/m-guide/knowledge/arrangement/section-energy.md
+  - docs/m-guide/knowledge/musicxml/structure-and-voices.md
+  - docs/m-guide/knowledge/musicxml/lyrics-and-notations.md
+  - docs/m-guide/knowledge/musicxml/validation-checklist.md
+  - docs/m-guide/catalog.yml
+- needs-approval: true
+- sources: none (no external refs)
