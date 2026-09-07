@@ -41,13 +41,14 @@ runs/upgrade/<YYYY-MM-DD-slug>/
 
 1. Đọc purpose, standards, catalog, trang liên quan chủ đề user.
 2. Liệt kê **lỗ hổng** (ưu tiên **một chủ đề chính** / run; gộp nhiều chủ đề chỉ khi user yêu cầu rõ và changelog tách từng file).
-3. Tìm kiến thức trên mạng khi cần. Mỗi khẳng định mới → URL trong `sources`.
-4. **Kiểm tra nguồn:** bỏ URL placeholder, trang vendor không kiểm chứng (vd. link bài Suno giả), và nguồn không liên quan sáng tác.
-5. Phân loại **constraint vs hint** (bắt buộc — xem dưới).
-6. Viết trang theo [page-template](../meta/page-template.md) hoặc [styles/_template](../knowledge/styles/_template.md).
-7. Cập nhật bản `catalog.yml` trong `proposed/` (không đụng gốc).
-8. Điền `changelog.md` theo [upgrade-changelog.template.md](../artifacts/upgrade-changelog.template.md). Mỗi dòng: action, path, lỗi sản phẩm nhắm tới, `needs_approval`.
-9. Dừng. **Không merge** trừ khi user yêu cầu rõ.
+3. Tìm / tham khảo tài liệu ngoài **khi cần** (không bắt buộc mọi lần).
+4. **Nếu đã tham khảo ngoài:** mọi nguồn đã dùng phải có URL theo dõi được trong `sources` (frontmatter trang) và mục Sources của `changelog.md`. Ưu tiên nguồn rõ ràng (spec, paper, tài liệu kỹ thuật). Không ghi nguồn mơ hồ (“theo internet”) và không dùng URL giả / placeholder / vendor không kiểm chứng.
+5. **Nếu không tham khảo ngoài:** `sources` có thể để trống hoặc chỉ trỏ trang nội bộ `docs/m-guide/`; trong changelog ghi `Sources: none (no external refs)`.
+6. Phân loại **constraint vs hint** (xem dưới).
+7. Viết trang theo [page-template](../meta/page-template.md) hoặc [styles/_template](../knowledge/styles/_template.md).
+8. Cập nhật bản `catalog.yml` trong `proposed/` (không đụng gốc).
+9. Điền `changelog.md` theo [upgrade-changelog.template.md](../artifacts/upgrade-changelog.template.md). Mỗi dòng: action, path, lỗi sản phẩm nhắm tới, `needs_approval`.
+10. Dừng. **Không merge** trừ khi user yêu cầu rõ.
 
 ## Constraint vs hint (chống “phình luật”)
 
@@ -60,6 +61,12 @@ runs/upgrade/<YYYY-MM-DD-slug>/
 
 Mọi constraint **mới** → `needs_approval: true` trong changelog. Không tự active như luật đã chốt.
 
+## Nguồn tham khảo (theo dõi, không bắt buộc luôn có)
+
+- **Không** bắt buộc mọi đề xuất phải có link ngoài.
+- **Khi** AI có tham khảo tài liệu / trang web / spec: phải ghi URL cụ thể vào `sources` + changelog để người theo dõi được.
+- Cấm: “theo nhiều nguồn”, URL hỏng, placeholder, nguồn không liên quan sáng tác.
+
 ## Cấm
 
 - Đọc `archive/`
@@ -67,6 +74,7 @@ Mọi constraint **mới** → `needs_approval: true` trong changelog. Không t�
 - Dump bài báo; mỗi mục phải trả lời “dùng lúc sáng tác/phối khí thế nào?”
 - Trích lời / nhạc có bản quyền
 - Biến tin web thành constraint đã active mà không `needs-approval`
+- Tham khảo ngoài nhưng **không** để lại URL theo dõi được
 - `sources` chứa URL giả / không mở được / không liên quan
 
 ## STATUS.md tối thiểu

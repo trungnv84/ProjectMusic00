@@ -48,9 +48,10 @@ Mỗi mục changelog phải chỉ **lỗi sản phẩm nào** nó nhắm (lời
 1. Chuẩn hóa / hoàn thiện `run-review.md`.
 2. Chẩn đoán lớp: quy trình | prompt | kiến thức | thẻ phong cách | catalog.
 3. Ghi patch vào `proposed/` (mirror path kho gốc).
-4. Constraint → `needs-approval: true`.
-5. Hướng dẫn user chạy lại Bước 3/4 trên `runs/compose/` (hoặc Bước 1 nếu prompt yếu).
-6. **Không merge** trừ khi user yêu cầu rõ.
+4. Constraint mới → `needs-approval: true`.
+5. **Nguồn:** không bắt buộc phải có link ngoài. **Nếu** đã tham khảo tài liệu/web/spec khi đề xuất → ghi URL cụ thể vào `sources` (trang đề xuất) và mục Sources của `changelog.md` để theo dõi. Không ghi nguồn mơ hồ; không URL giả/placeholder.
+6. Hướng dẫn user chạy lại Bước 3/4 trên `runs/compose/` (hoặc Bước 1 nếu prompt yếu).
+7. **Không merge** trừ khi user yêu cầu rõ.
 
 ## Cấm
 
@@ -58,6 +59,7 @@ Mỗi mục changelog phải chỉ **lỗi sản phẩm nào** nó nhắm (lời
 - Sửa `docs/m-guide/` trực tiếp
 - “Nâng cấp” bằng cách nhét lời/nhạc bản quyền
 - Merge tự động vì “đã viết xong đề xuất”
+- Tham khảo ngoài nhưng không để lại URL theo dõi được
 
 ## STATUS.md tối thiểu
 

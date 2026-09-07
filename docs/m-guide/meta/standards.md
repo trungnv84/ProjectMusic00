@@ -44,6 +44,13 @@ Hint **không** được viết như luật. Đổi constraint mới = đề xu�
 
 **Mặc định từ web:** xu hướng nghiên cứu / thống kê corpus / “thường gặp” → **hint**. Chỉ nâng **constraint** khi là XML well-formed, schema-hard, hoặc user đã chốt.
 
+## Nguồn ngoài (theo dõi khi có dùng)
+
+- **Không** bắt buộc mọi trang / mọi đề xuất curator–improver phải có URL ngoài.
+- **Khi** AI (hoặc người) có tham khảo tài liệu ngoài: ghi URL cụ thể vào `sources` (và changelog upgrade) để theo dõi được.
+- `sources: []` hợp lệ nếu nội dung chỉ dựa kho nội bộ / suy luận có kiểm soát, không viện dẫn trang ngoài.
+- Cấm viện dẫn ngoài mà không để link, hoặc để URL giả / không mở được / không liên quan.
+
 ## Frontmatter bắt buộc
 
 ```yaml

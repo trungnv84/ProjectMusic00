@@ -17,7 +17,17 @@ Lưu: `runs/upgrade/<run-id>/changelog.md`
 
 ## Sources (web)
 
+Chỉ liệt kê URL **đã thực sự tham khảo**. Không bắt buộc phải có.
+
+```text
 - https://...
+```
+
+Hoặc:
+
+```text
+- none (no external refs)
+```
 
 ## Merge
 
