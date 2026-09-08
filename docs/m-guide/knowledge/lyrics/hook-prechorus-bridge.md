@@ -2,7 +2,7 @@
 id: KNOW.LYRICS.HOOK-PRECHORUS-BRIDGE
 type: knowledge
 status: active
-version: "1.0"
+version: "1.1"
 tags: [compose, lyrics, melody, rhythm-form]
 serves-steps: [3]
 sources:
@@ -16,12 +16,16 @@ last-updated: "2026-09-08"
 
 ## Dùng ở bước nào
 
-- Bước 3 — phân vai section (hook / pre / bridge) trước khi viết chi tiết lead sheet.
+- Bước 3 — chốt hook nhạc + lời trước khi fill toàn bài (cùng lượt với lead sheet).
+- Bước 3 — phân vai section (hook / pre / bridge).
 
 ## Constraints
 
 - Không sao chép hook lời/nhạc có bản quyền.
 - Không đổi lyric/melody/harmony đã locked chỉ để “có đủ” pre/bridge nếu user không yêu cầu form đó.
+- **Chốt hook melody cell (pitch+rhythm) trước** khi lặp Chorus / Chorus2 / Final.
+- Lời hook phải qua speak-test ([lyric-melody-fit](lyric-melody-fit.md)) trước khi PASS gate.
+- Bridge phải tạo contrast thật (≥2 chiều) — xem [anti-patterns](../melody/anti-patterns.md) và quality gate.
 
 ## Hints
 
@@ -31,6 +35,7 @@ last-updated: "2026-09-08"
 - Ngắn, dễ nhớ (gợi ý 2–4 ô nhịp motif); lời thường là câu chủ đề / title.
 - Đỉnh cao độ hoặc leap có chủ đích giúp neo tai.
 - Thử hook **mở** (đầu chorus) hoặc **đóng** (cuối chorus) tùy CONCEPT — không bắt buộc một kiểu.
+- Lặp hook chỉ có giá trị sau khi hook đã memorable — lặp skeleton nhạt không phải hook.
 
 ### Pre-chorus
 
@@ -48,9 +53,10 @@ last-updated: "2026-09-08"
 ## Cách áp dụng
 
 1. Chốt SONG_FORM (có/không pre, bridge).
-2. Viết / chốt **hook** trước; dựng chorus quanh hook.
-3. Verse kể chuyện ở register/mật độ thấp hơn.
+2. Viết / chốt **hook nhạc + lời** trước; dựng chorus quanh hook; speak-test.
+3. Verse kể chuyện ở register/mật độ thấp hơn; motif riêng.
 4. Pre nâng tension; bridge đổi góc nhìn rồi dẫn lại chorus.
+5. Final: phát triển (không chỉ cao hơn).
 
 ## Ví dụ ngắn (tự viết)
 
@@ -61,7 +67,9 @@ last-updated: "2026-09-08"
 ## Related
 
 - `KNOW.LYRICS.CRAFT`
+- `KNOW.LYRICS.LYRIC-MELODY-FIT`
 - `KNOW.MELODY.CONTOUR`
 - `KNOW.MELODY.MOTIF-DEVELOPMENT`
+- `KNOW.MELODY.ANTI-PATTERNS`
 - `KNOW.RHYTHM.FORM`
 - `KNOW.HARMONY.FUNCTIONAL-CADENCE-VOICING`

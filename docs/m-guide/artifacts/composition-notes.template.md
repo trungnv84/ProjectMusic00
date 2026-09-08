@@ -4,6 +4,8 @@ Lưu: `runs/compose/<run-id>/03-composition-notes.md` (hoặc arrangement notes)
 
 **Bắt buộc (Bước 3):** có khối `lyrics_by_section` — bản lời đọc được theo section, **khớp** lời gắn nốt trong MusicXML. Mục đích: người duyệt xem/sửa lời mà không cần mở score. Section instrumental → `lines: []`.
 
+**Bắt buộc thêm:** `motifs_declared`, `hook_melody_cell`, `prosody_audit`, `music_quality_gate`.
+
 ---
 
 ```text
@@ -19,7 +21,7 @@ literary_devices_used:
     purpose: ""
 
 reference_style_handling:
-  - style_card_id: ""
+  - style_card_id: ""   # PHẢI khớp id trong 02-compose-prompt
     how_applied: "đặc trưng khái quát only"
     no_copy_affirmation: true
 
@@ -29,8 +31,51 @@ resolved_delegated_fields:
     rationale: ""
     alternatives_considered: []
 
-tone_melody_tradeoffs:   # nếu tiếng Việt
+motifs_declared:
+  - id: ""
+    pitches: ""
+    rhythm: ""
+
+hook_melody_cell:
+  pitches: ""
+  rhythm: ""
+  lyric_hook: ""
+
+section_contrast_map:
+  - section: ""
+    contrast_notes: ""
+
+tone_melody_tradeoffs:   # nếu tiếng Việt — theo transitions, không ±1 máy móc
   - ""
+
+prosody_audit:           # BẮT BUỘC — hook + ≥1 câu verse
+  - line: ""
+    syllables: []        # {syl, tone, beat, duration, keyword?}
+    speak_test: pass|fail
+    notes: ""
+
+music_quality_gate:
+  result: PASS|FAIL
+  scores:
+    melodic_repetition: ok|weak|fail
+    phrase_similarity: ok|weak|fail
+    section_contrast: ok|weak|fail
+    rhythmic_variety: ok|weak|fail
+    hook_distinctiveness: ok|weak|fail
+    register_development: ok|weak|fail
+    cadential_variety: ok|weak|fail
+    harmonic_motion: ok|weak|fail
+    lyric_melody_fit: ok|weak|fail
+    vietnamese_tone_melody: ok|weak|fail
+    style_consistency: ok|weak|fail
+  thresholds:
+    REQUIRE_CHORUS_HOOK: pass|fail
+    REQUIRE_BRIDGE_CONTRAST: pass|fail
+    REQUIRE_FINAL_CHORUS_DEVELOPMENT: pass|fail
+    REQUIRE_SPEAK_TEST: pass|fail
+    REQUIRE_STYLE_ECHO: pass|fail
+  evidence: ""
+  if_fail: "rewrite whole lead sheet with new motifs — do not patch isolated notes"
 
 deviations_or_tradeoffs:
   - ""

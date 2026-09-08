@@ -6,7 +6,7 @@
 # - AI dựng URL: REPO_RAW + "/" + path (xem meta/link-scheme.md)
 # - Cấm path dưới archive/
 
-version: "1.6"
+version: "1.8"
 updated: "2026-09-08"
 
 pages:
@@ -74,13 +74,13 @@ pages:
     path: docs/m-guide/pipeline/step-03-compose.md
     tags: [pipeline, compose]
     serves-steps: [3]
-    summary: Playbook Bước 3 MusicXML lead sheet
+    summary: Playbook Bước 3 — lead sheet một lượt + quality gate (invent giai điệu)
 
   - id: PIPE.STEP-04
     path: docs/m-guide/pipeline/step-04-arrange.md
     tags: [pipeline, arrange]
     serves-steps: [4]
-    summary: Playbook Bước 4 MusicXML phối khí
+    summary: Playbook Bước 4 phối khí một lượt — giữ contrast section
 
   - id: PIPE.MERGE-POLICY
     path: docs/m-guide/pipeline/merge-policy.md
@@ -124,6 +124,12 @@ pages:
     serves-steps: [3]
     summary: Chức năng hook, pre-chorus và bridge khi viết lời/giai điệu
 
+  - id: KNOW.LYRICS.LYRIC-MELODY-FIT
+    path: docs/m-guide/knowledge/lyrics/lyric-melody-fit.md
+    tags: [compose, lyrics, melody, vietnamese]
+    serves-steps: [3]
+    summary: Khớp lời–nhạc — stress↔beat, speak-test, VN tone transitions
+
   - id: KNOW.MELODY.CONTOUR
     path: docs/m-guide/knowledge/melody/contour.md
     tags: [compose, melody]
@@ -141,6 +147,30 @@ pages:
     tags: [compose, melody]
     serves-steps: [3]
     summary: Phát triển motif và sequence trong giai điệu
+
+  - id: KNOW.MELODY.INVENTION
+    path: docs/m-guide/knowledge/melody/melody-invention.md
+    tags: [compose, melody]
+    serves-steps: [3]
+    summary: Tự sáng tác giai điệu — cấm điền lời vào skeleton mẫu
+
+  - id: KNOW.MELODY.COMPOSITION-PLANNING
+    path: docs/m-guide/knowledge/melody/composition-planning.md
+    tags: [compose, melody, lyrics]
+    serves-steps: [3]
+    summary: Checklist nội bộ trước khi khóa lead sheet (không file 03a)
+
+  - id: KNOW.MELODY.ANTI-PATTERNS
+    path: docs/m-guide/knowledge/melody/anti-patterns.md
+    tags: [compose, melody]
+    serves-steps: [3]
+    summary: Anti-pattern giai điệu — lặp skeleton, bridge giả, tone offset máy móc
+
+  - id: KNOW.MELODY.QUALITY-GATE
+    path: docs/m-guide/knowledge/melody/musical-quality-gate.md
+    tags: [compose, melody, lyrics, vietnamese]
+    serves-steps: [3]
+    summary: Music quality gate PASS/FAIL trước khi coi Bước 3 xong
 
   - id: KNOW.HARMONY.BASICS
     path: docs/m-guide/knowledge/harmony/basics.md

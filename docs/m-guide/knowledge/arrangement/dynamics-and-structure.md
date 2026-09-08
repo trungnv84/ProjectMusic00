@@ -22,6 +22,8 @@ last-updated: "2026-09-08"
 
 - Không đổi lyric / melody / harmony đã locked chỉ để tạo climax.
 - Dynamics trong MusicXML phải nhất quán với marking đã dùng (xem performance-markings).
+- **Cấm** một pattern đệm/rhythm section giống hệt mọi section chỉ đổi hợp âm — làm mất tương phản lead sheet (Bước 4).
+- Verse và Chorus phải khác mật độ layer hoặc articulation nghe được; Bridge không “Chorus nhẹ hơn một nấc” nếu notes Bước 3 đã yêu cầu đổi màu.
 
 ## Hints
 

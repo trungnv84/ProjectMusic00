@@ -2,13 +2,15 @@
 id: PIPE.STEP-03
 type: pipeline
 status: active
-version: "1.0"
+version: "1.2"
 tags: [pipeline, compose]
 serves-steps: [3]
 last-updated: "2026-09-08"
 ---
 
 # Bước 3 — Sáng tác → MusicXML (lead sheet)
+
+**Một bước, chạy tự động đến xong.** Không tách file plan riêng, không dừng giữa chừng để duyệt plan (phù hợp chat web và Cursor). MusicXML hợp lệ ≠ bài đạt — phải qua quality gate trong notes.
 
 ## Input bắt buộc
 
@@ -20,24 +22,30 @@ last-updated: "2026-09-08"
 
 - Mọi URL trong `DOC_REFS` của compose-prompt
 - [../meta/song-request-schema.md](../meta/song-request-schema.md)
-- Knowledge `musicxml` tagged compose (tối thiểu [rules](../knowledge/musicxml/rules.md), [anti-patterns](../knowledge/musicxml/anti-patterns.md))
+- Knowledge melody: [melody-invention](../knowledge/melody/melody-invention.md), [composition-planning](../knowledge/melody/composition-planning.md) (checklist nội bộ), [anti-patterns](../knowledge/melody/anti-patterns.md), [quality-gate](../knowledge/melody/musical-quality-gate.md), motif / phrase / contour
+- Knowledge lyrics/VN: [lyric-melody-fit](../knowledge/lyrics/lyric-melody-fit.md), tone-melody, syllable-priority
+- Knowledge `musicxml` (tối thiểu [rules](../knowledge/musicxml/rules.md), [anti-patterns](../knowledge/musicxml/anti-patterns.md))
 - [../artifacts/composition-notes.template.md](../artifacts/composition-notes.template.md)
 
-## AI làm
+## AI làm (một lượt)
 
-1. Parse yêu cầu theo schema; resolve `DELEGATED` trong biên CONSTRAINTS.
-2. Nếu có thẻ phong cách: theo **đặc trưng khái quát** — không sao chép nốt/lời gốc.
-3. Viết lời + giai điệu + hòa âm (ký hiệu hợp âm và/hoặc piano reduction).
-4. Xuất **MusicXML 4.0 partwise** lead sheet: voice + lyrics + harmony/piano; **không** dàn dựng đầy đủ.
-5. Tuân anti-patterns MusicXML (DTD, part-list khớp part, measure liên tục, midi-program 1–128, duration > 0).
-6. Viết `COMPOSITION_NOTES` theo template — **bắt buộc** có `lyrics_by_section` (bản lời đọc được theo section, khớp lời trong MusicXML; section không lời → `lines: []`).
+1. Parse yêu cầu theo schema; resolve `DELEGATED`; echo đúng `REFERENCE_STYLE` id.
+2. **Tự sáng tác** lời + giai điệu + hòa âm theo [melody-invention](../knowledge/melody/melody-invention.md) — **cấm** điền lời vào một skeleton pitch/rhythm cố định rồi lặp.
+3. Trong đầu (hoặc nháp riêng, **không** bắt buộc artifact): chốt hook đáng nhớ, motif khác nhau theo section, map prosody; rồi viết thẳng lead sheet.
+4. Xuất **MusicXML 4.0 partwise** (voice + lyrics + harmony/piano), **pretty-print**.
+5. Viết `03-composition-notes.md`: `lyrics_by_section`, `motifs_declared`, `hook_melody_cell`, `prosody_audit`, `music_quality_gate`.
+6. Tự chấm gate. **FAIL** → viết lại toàn bộ lead sheet (đổi motif/hook), **không** patch vài nốt. Chỉ coi xong khi PASS (hoặc user override tường minh).
+
+Chat web (không workspace): xuất cùng nội dung trong chat (MusicXML + notes) theo template; không tạo file `03a-…`.
 
 ## Output
 
 ```text
 runs/compose/<run-id>/03-song.musicxml
-runs/compose/<run-id>/03-composition-notes.md   # gồm lyrics_by_section
-STATUS.md  # step3: done
+runs/compose/<run-id>/03-composition-notes.md   # lyrics_by_section + music_quality_gate
+STATUS.md  # step3: done chỉ khi gate PASS (hoặc user override)
 ```
 
-Dừng. Nếu user không đạt → improver vào `runs/upgrade/<id-mới>/` — **không** sửa kho gốc.
+**Không** yêu cầu `03a-composition-plan.md`.
+
+Dừng để user nghe/duyệt lead sheet. Không đạt → improver — **không** sửa kho gốc.

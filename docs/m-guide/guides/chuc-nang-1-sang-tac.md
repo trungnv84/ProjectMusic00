@@ -2,7 +2,7 @@
 id: META.GUIDE-COMPOSE
 type: meta
 status: active
-version: "1.0"
+version: "1.2"
 tags: [meta, compose, guide]
 serves-steps: [1, 2, 3, 4]
 sources: []
@@ -21,10 +21,10 @@ Tạo bài hát (ưu tiên tiếng Việt) qua **4 bước độc lập**, xuấ
 |------|--------------|------------|
 | 1 | `01-meta-prompt.md` | Duyệt / sửa meta-prompt |
 | 2 | `02-compose-prompt.md` + `02-arrange-prompt.md` | Duyệt DOC_REFS + yêu cầu |
-| 3 | `03-song.musicxml` + notes | Lead sheet: lời, giai điệu, hòa âm |
-| 4 | `04-arranged.musicxml` + notes | Phối khí nhiều part |
+| 3 | `03-song.musicxml` + notes (+ quality gate) | Lead sheet — AI chạy **một lượt** |
+| 4 | `04-arranged.musicxml` + notes | Phối khí — AI chạy **một lượt** |
 
-Mỗi bước **dừng để bạn sửa**. Không bắt buộc chạy cả 4 trong một lần.
+Mỗi bước **dừng để bạn sửa** sau khi AI xong bước đó. Không bắt buộc chạy cả 4 trong một lần. Bước 3/4 **không** tách file plan phụ để duyệt giữa chừng (thuận chat web).
 
 ## Trước khi bắt đầu
 
@@ -93,7 +93,7 @@ Yêu cầu bài hát:
 - Ràng buộc cứng: không sao chép lời/nhạc có bản quyền; MusicXML 4.0
 
 Sau Bước 1 và 2: chỉ tạo prompt + DOC_REFS, chưa viết bài.
-Sau Bước 3: lead sheet (không full arrangement).
+Sau Bước 3: lead sheet + notes + music_quality_gate (một lượt; không file 03a).
 Sau Bước 4: phối khí; khóa lời/giai điệu/hòa âm từ Bước 3 trừ khi tôi nói được sửa.
 ```
 
@@ -124,18 +124,17 @@ Không viết MusicXML ở bước này.
 
 ```text
 Đọc https://github.com/trungnv84/ProjectMusic00/blob/master/docs/m-guide/for-ai.md
-Làm Bước 3 theo pipeline/step-03-compose.md.
+Làm Bước 3 theo pipeline/step-03-compose.md — một lượt tự động đến khi xong.
 Compose-prompt: runs/compose/<run-id>/02-compose-prompt.md
 Yêu cầu bài hát: "..."
 REFERENCE_STYLE: STYLE.VN.VPOP-BALLAD
 
-Fetch mọi DOC_REFS trong compose-prompt + knowledge musicxml (rules, anti-patterns) + song-request-schema.
-Xuất:
-- runs/compose/<run-id>/03-song.musicxml  (lead sheet: vocal + lyrics + harmony)
-- runs/compose/<run-id>/03-composition-notes.md  (bắt buộc lyrics_by_section — bản lời theo section để duyệt)
-Cấm: full band arrangement; sao chép hook/lời bản quyền; bỏ qua thanh điệu tiếng Việt nếu primary_language = Vietnamese.
+Fetch mọi DOC_REFS + melody-invention, anti-patterns, quality-gate, lyric-melody-fit + musicxml + song-request-schema.
+Xuất (cùng lượt):
+- runs/compose/<run-id>/03-song.musicxml  (lead sheet pretty-print; tự invent giai điệu — không skeleton mẫu)
+- runs/compose/<run-id>/03-composition-notes.md  (lyrics_by_section + prosody_audit + music_quality_gate)
+Cấm: file 03a; full band; sao chép hook/lời bản quyền; điền lời vào một mẫu nốt lặp; patch nốt sau gate FAIL.
 ```
-
 ### E. Chỉ Bước 4 (phối khí)
 
 ```text
@@ -176,7 +175,7 @@ Yêu cầu bài hát:
 Đọc https://github.com/trungnv84/ProjectMusic00/blob/master/docs/m-guide/for-ai.md
 Chạy improver (prompts/improver.md).
 Compose run: runs/compose/<run-id>/
-Vấn đề: "..." (ví dụ: thanh điệu lệch / chorus yếu / MusicXML lỗi importer)
+Vấn đề: "..." (ví dụ: thanh điệu lệch / chorus yếu / melody lặp / lời–nhạc lệch / MusicXML lỗi importer)
 Ghi đề xuất vào runs/upgrade/<ngày-slug>/proposed/. Không sửa docs/m-guide/ cho đến khi tôi bảo merge.
 ```
 
@@ -184,13 +183,13 @@ Ghi đề xuất vào runs/upgrade/<ngày-slug>/proposed/. Không sửa docs/m-g
 
 ## Checklist nhanh
 
-- [ ] AI đã đọc `for-ai.md` + dùng `catalog.yml` (không dump cả kho)
+- [ ] AI đã đọc `for-ai.md` + dùng `catalog.yml` (không dump cả kho; không bịa path)
 - [ ] Mỗi bước có file trong `runs/compose/<run-id>/` (nếu workspace)
-- [ ] Bước 3 = lead sheet; Bước 4 mới full parts
-- [ ] `03-composition-notes.md` có `lyrics_by_section` khớp lời trong MusicXML
-- [ ] Tiếng Việt: có xem tone-melody / syllable-priority khi viết lời+giai điệu
-- [ ] `REFERENCE_STYLE` chỉ là nhãn đặc trưng — không copy bài mẫu
-- [ ] MusicXML: part-list khớp part, measure liên tục, duration > 0, midi-program 1–128
+- [ ] Bước 3 = lead sheet một lượt (XML + notes + gate); Bước 4 mới full parts
+- [ ] `03-composition-notes.md` có `lyrics_by_section` + `music_quality_gate: PASS`
+- [ ] Tiếng Việt: tone-melody (transitions) + lyric-melody-fit + speak-test; giai điệu **invent** không skeleton lặp
+- [ ] `REFERENCE_STYLE` echo đúng id trong notes — không copy bài mẫu
+- [ ] MusicXML: pretty-print; part-list khớp part, measure liên tục, duration > 0, midi-program 1–128
 
 ## Liên kết thêm
 

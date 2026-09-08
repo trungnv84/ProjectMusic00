@@ -8,6 +8,7 @@ Bạn đang dùng kho **ProjectMusic00 / docs/m-guide**. Đây là nguồn chân
 - Không sửa `docs/m-guide/` trong cùng lượt chạy chức năng 1 hoặc 2.
 - Không nhét lời / giai điệu / riff của tác phẩm có bản quyền vào kho hoặc vào MusicXML “theo phong cách”.
 - Không giả vờ đã commit / merge trừ khi user yêu cầu rõ.
+- Không invent Step 5 / pipeline vendor (Suno, Udio, …) hay path knowledge không có trong `catalog.yml`.
 
 ## 1. Suy ra BASE URL
 
@@ -55,8 +56,8 @@ Luôn: file này, [catalog.yml](catalog.yml), [meta/standards.md](meta/standards
 |------|------|
 | Bước 1 | `prompt-craft/*`, `artifacts/meta-prompt.template.md`, `pipeline/step-01-meta-prompt.md` |
 | Bước 2 | meta-prompt (user), `pipeline/step-02-specialized-prompts.md`, catalog đủ, template compose/arrange |
-| Bước 3 | compose-prompt, mọi URL `DOC_REFS` compose, `pipeline/step-03-compose.md`, `meta/song-request-schema.md`, knowledge tagged compose/musicxml, template notes |
-| Bước 4 | MusicXML Bước 3, arrange-prompt, `DOC_REFS` arrange, `pipeline/step-04-arrange.md`, knowledge arrange/musicxml |
+| Bước 3 | compose-prompt, mọi URL `DOC_REFS` compose, `pipeline/step-03-compose.md`, `meta/song-request-schema.md`, knowledge tagged compose/musicxml **+** melody-invention, anti-patterns, quality-gate, lyric-melody-fit, composition-notes template |
+| Bước 4 | MusicXML Bước 3, arrange-prompt, `DOC_REFS` arrange, `pipeline/step-04-arrange.md`, knowledge arrange/musicxml (section-energy, dynamics) |
 | Curator | `prompts/curator.md`, `meta/purpose.md`, `meta/page-template.md` |
 | Improver | `prompts/improver.md`, `artifacts/run-review.template.md`, trang liên quan lỗi |
 | Merge | Chỉ khi user yêu cầu: `pipeline/merge-policy.md` + `runs/upgrade/<id>/` |
@@ -69,8 +70,8 @@ Chi tiết: [pipeline/overview.md](pipeline/overview.md).
 
 1. **Meta-prompt** → `01-meta-prompt.md` — dạy AI Bước 2 đọc catalog và sinh 2 prompt + DOC_REFS. Không điền bài hát trừ khi user đã đưa.
 2. **Hai prompt** → `02-compose-prompt.md` + `02-arrange-prompt.md` — chỉ dẫn trang, không nhét nguyên văn kho.
-3. **Sáng tác** → `03-song.musicxml` + notes (bắt buộc `lyrics_by_section`) — lead sheet (lời, giai điệu, hòa âm); không dàn đầy đủ.
-4. **Phối khí** → `04-arranged.musicxml` — nhiều part; khóa lời/giai điệu/hòa âm trừ khi user giao quyền.
+3. **Sáng tác** → `03-song.musicxml` + notes (bắt buộc `lyrics_by_section` + `music_quality_gate`) trong **một lượt** — invent giai điệu, không file `03a`; lead sheet; không dàn đầy đủ. Gate FAIL → viết lại cả lead sheet.
+4. **Phối khí** → `04-arranged.musicxml` — nhiều part; khóa lời/giai điệu/hòa âm; làm rõ contrast section, không đệm một pattern đều.
 
 Mỗi bước dừng để user sửa. Thiếu đầu ra bước trước → user dán bản tương đương.
 
@@ -82,7 +83,7 @@ Mỗi bước dừng để user sửa. Thiếu đầu ra bước trước → us
 
 ## 7. Thẻ phong cách
 
-Tên tác phẩm/nghệ sĩ = nhãn. Lưu đặc trưng khái quát. Cấm sao chép nốt/lời/hook. Xem `knowledge/styles/`.
+Tên tác phẩm/nghệ sĩ = nhãn. Lưu đặc trưng khái quát. Cấm sao chép nốt/lời/hook. Xem `knowledge/styles/`. Notes phải **echo đúng** `REFERENCE_STYLE` id từ compose-prompt.
 
 ## 8. Mẫu tin nhắn user
 

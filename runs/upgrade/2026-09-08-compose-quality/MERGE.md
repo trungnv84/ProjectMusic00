@@ -1,0 +1,33 @@
+# MERGE
+
+- from: runs/upgrade/2026-09-08-compose-quality/proposed/
+- to: docs/m-guide/
+- files:
+  - docs/m-guide/for-ai.md
+  - docs/m-guide/catalog.yml
+  - docs/m-guide/guides/chuc-nang-1-sang-tac.md
+  - docs/m-guide/pipeline/overview.md
+  - docs/m-guide/pipeline/step-03-compose.md
+  - docs/m-guide/prompt-craft/output-contract.md
+  - docs/m-guide/artifacts/composition-plan.template.md (new)
+  - docs/m-guide/artifacts/compose-prompt.template.md
+  - docs/m-guide/artifacts/composition-notes.template.md
+  - docs/m-guide/artifacts/meta-prompt.template.md
+  - docs/m-guide/knowledge/README.md
+  - docs/m-guide/knowledge/melody/anti-patterns.md (new)
+  - docs/m-guide/knowledge/melody/musical-quality-gate.md (new)
+  - docs/m-guide/knowledge/melody/composition-planning.md (new)
+  - docs/m-guide/knowledge/melody/motif-development.md
+  - docs/m-guide/knowledge/melody/phrase-structure.md
+  - docs/m-guide/knowledge/lyrics/lyric-melody-fit.md (new)
+  - docs/m-guide/knowledge/lyrics/prosody-and-rhyme.md
+  - docs/m-guide/knowledge/lyrics/hook-prechorus-bridge.md
+  - docs/m-guide/knowledge/vietnamese/tone-melody.md
+  - docs/m-guide/knowledge/vietnamese/syllable-priority.md
+  - docs/m-guide/knowledge/musicxml/anti-patterns.md
+  - docs/m-guide/knowledge/musicxml/validation-checklist.md
+- needs_approval_items:
+  - New FAIL constraints (melody anti-patterns, quality gate thresholds, lyric-melody-fit)
+  - Tone-melody transition constraints (ban mechanical ±1)
+- instruction: User requested implement plan (merge + recompose). Copy proposed → docs/m-guide then recompose song.
+- fixtures_not_merged: runs/upgrade/2026-09-08-compose-quality/fixtures/ (stay in upgrade run)
