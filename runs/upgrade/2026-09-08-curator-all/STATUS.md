@@ -1,0 +1,24 @@
+# Upgrade STATUS
+- type: curator
+- topic: all
+- status: merged (2026-09-08)
+- merged_by: Auto (agent) — reviewed + adjusted before merge
+- proposed_files:
+  - docs/m-guide/knowledge/melody/motif-development.md
+  - docs/m-guide/knowledge/harmony/chord-substitution.md
+  - docs/m-guide/knowledge/rhythm-form/rhythmic-patterns.md
+  - docs/m-guide/knowledge/vocal/techniques.md
+  - docs/m-guide/knowledge/arrangement/dynamics-and-structure.md
+  - docs/m-guide/knowledge/styles/rock-generic.md
+  - docs/m-guide/catalog.yml
+- needs_approval: false (approved via user merge request)
+- merge_notes: |
+  Adjustments before merge:
+  - Restored catalog.yml YAML indentation; bumped version 1.3 → 1.4
+  - id KNOW.ARRANGEMENT.DYNAMICS-STRUCTURE → KNOW.ARR.DYNAMICS-STRUCTURE
+  - id STYLE.ROCK-GENERIC → STYLE.ROCK.GENERIC (align STYLE.*.*)
+  - rock-generic rewritten to style-card template fields
+  - Fixed C→Am shared tones; cleaned substitution examples
+  - Reduced overlap: vocal/techniques vs phrasing; dynamics vs section-energy; patterns vs groove
+  - Tables as real markdown (not fenced); status draft → active; real constraints where appropriate
+  - proposed/ synced to final merged content
