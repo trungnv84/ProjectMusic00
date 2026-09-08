@@ -4,14 +4,14 @@ Hướng dẫn đầy đủ Chức năng 1: [guides/chuc-nang-1-sang-tac.md](../
 
 Repo mặc định dưới đây: `trungnv84/ProjectMusic00`, branch `master`. Đổi `OWNER` / `REPO` / `BRANCH` nếu fork khác.
 
-Canonical: `https://raw.githubusercontent.com/trungnv84/ProjectMusic00/master/docs/m-guide/for-ai.md`
+Canonical: `https://github.com/trungnv84/ProjectMusic00/blob/master/docs/m-guide/for-ai.md`
 
 ---
 
 ## Chức năng 1 — cả chuỗi
 
 ```text
-Đọc https://raw.githubusercontent.com/trungnv84/ProjectMusic00/master/docs/m-guide/for-ai.md
+Đọc https://github.com/trungnv84/ProjectMusic00/blob/master/docs/m-guide/for-ai.md
 Thực hiện Chức năng 1, cả 4 bước (dừng sau mỗi bước để tôi duyệt).
 Nếu đang ở workspace: ghi vào runs/compose/<ngày-slug>/.
 Yêu cầu bài hát: "..."
@@ -21,7 +21,7 @@ REFERENCE_STYLE (nếu có): STYLE.VN.VPOP-BALLAD
 ## Chỉ Bước 1
 
 ```text
-Đọc https://raw.githubusercontent.com/trungnv84/ProjectMusic00/master/docs/m-guide/for-ai.md
+Đọc https://github.com/trungnv84/ProjectMusic00/blob/master/docs/m-guide/for-ai.md
 Làm Bước 1 (meta-prompt).
 Yêu cầu: tạo khung để AI Bước 2 đọc catalog và sinh 2 prompt + DOC_REFS.
 Yêu cầu bài hát: "..."

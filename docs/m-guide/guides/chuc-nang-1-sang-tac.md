@@ -41,7 +41,7 @@ Thay nếu fork khác. Branch mặc định repo này thường là `master`:
 OWNER  = trungnv84
 REPO   = ProjectMusic00
 BRANCH = master
-FOR_AI = https://raw.githubusercontent.com/trungnv84/ProjectMusic00/master/docs/m-guide/for-ai.md
+FOR_AI = https://github.com/trungnv84/ProjectMusic00/blob/master/docs/m-guide/for-ai.md
 ```
 
 ## Thẻ phong cách (`REFERENCE_STYLE`)
@@ -75,7 +75,7 @@ Copy khối phù hợp. Điền phần trong `"..."`.
 ### A. Cả chuỗi 4 bước (khuyến nghị lần đầu)
 
 ```text
-Đọc https://raw.githubusercontent.com/trungnv84/ProjectMusic00/master/docs/m-guide/for-ai.md
+Đọc https://github.com/trungnv84/ProjectMusic00/blob/master/docs/m-guide/for-ai.md
 Thực hiện Chức năng 1 — cả 4 bước (dừng sau mỗi bước để tôi duyệt).
 Nếu đang ở workspace: ghi vào runs/compose/<YYYY-MM-DD-slug>/.
 Không sửa docs/m-guide/.
@@ -100,7 +100,7 @@ Sau Bước 4: phối khí; khóa lời/giai điệu/hòa âm từ Bước 3 tr�
 ### B. Chỉ Bước 1 (meta-prompt)
 
 ```text
-Đọc https://raw.githubusercontent.com/trungnv84/ProjectMusic00/master/docs/m-guide/for-ai.md
+Đọc https://github.com/trungnv84/ProjectMusic00/blob/master/docs/m-guide/for-ai.md
 Làm Bước 1 (meta-prompt) theo pipeline/step-01-meta-prompt.md và prompt-craft/.
 Workspace: ghi runs/compose/<YYYY-MM-DD-slug>/01-meta-prompt.md + STATUS.md.
 Yêu cầu bài hát: "..."
@@ -111,7 +111,7 @@ Mục tiêu meta-prompt: dạy AI Bước 2 đọc catalog và sinh 2 prompt (co
 ### C. Chỉ Bước 2 (hai prompt chuyên biệt)
 
 ```text
-Đọc https://raw.githubusercontent.com/trungnv84/ProjectMusic00/master/docs/m-guide/for-ai.md
+Đọc https://github.com/trungnv84/ProjectMusic00/blob/master/docs/m-guide/for-ai.md
 Làm Bước 2 theo pipeline/step-02-specialized-prompts.md.
 Input: runs/compose/<run-id>/01-meta-prompt.md
          (hoặc dán meta-prompt dưới đây)
@@ -123,7 +123,7 @@ Không viết MusicXML ở bước này.
 ### D. Chỉ Bước 3 (sáng tác lead sheet)
 
 ```text
-Đọc https://raw.githubusercontent.com/trungnv84/ProjectMusic00/master/docs/m-guide/for-ai.md
+Đọc https://github.com/trungnv84/ProjectMusic00/blob/master/docs/m-guide/for-ai.md
 Làm Bước 3 theo pipeline/step-03-compose.md.
 Compose-prompt: runs/compose/<run-id>/02-compose-prompt.md
 Yêu cầu bài hát: "..."
@@ -139,7 +139,7 @@ Cấm: full band arrangement; sao chép hook/lời bản quyền; bỏ qua thanh
 ### E. Chỉ Bước 4 (phối khí)
 
 ```text
-Đọc https://raw.githubusercontent.com/trungnv84/ProjectMusic00/master/docs/m-guide/for-ai.md
+Đọc https://github.com/trungnv84/ProjectMusic00/blob/master/docs/m-guide/for-ai.md
 Làm Bước 4 theo pipeline/step-04-arrange.md.
 Arrange-prompt: runs/compose/<run-id>/02-arrange-prompt.md
 Lead sheet khóa: runs/compose/<run-id>/03-song.musicxml
@@ -173,7 +173,7 @@ Yêu cầu bài hát:
 ### G. Sau khi chưa ưng — chuyển Improver (Chức năng 2b)
 
 ```text
-Đọc https://raw.githubusercontent.com/trungnv84/ProjectMusic00/master/docs/m-guide/for-ai.md
+Đọc https://github.com/trungnv84/ProjectMusic00/blob/master/docs/m-guide/for-ai.md
 Chạy improver (prompts/improver.md).
 Compose run: runs/compose/<run-id>/
 Vấn đề: "..." (ví dụ: thanh điệu lệch / chorus yếu / MusicXML lỗi importer)
