@@ -6,7 +6,7 @@
 # - AI dựng URL: REPO_RAW + "/" + path (xem meta/link-scheme.md)
 # - Cấm path dưới archive/
 
-version: "1.6"
+version: "1.5"
 updated: "2026-09-08"
 
 pages:
@@ -45,12 +45,6 @@ pages:
     tags: [meta, compose]
     serves-steps: [2, 3, 4]
     summary: Schema yêu cầu bài hát dùng chung
-
-  - id: META.GUIDE-COMPOSE
-    path: docs/m-guide/guides/chuc-nang-1-sang-tac.md
-    tags: [meta, compose, guide]
-    serves-steps: [1, 2, 3, 4]
-    summary: Hướng dẫn người dùng Chức năng 1 — sáng tác + prompt mẫu
 
   - id: PIPE.OVERVIEW
     path: docs/m-guide/pipeline/overview.md
@@ -150,7 +144,7 @@ pages:
 
   - id: KNOW.HARMONY.FUNCTIONAL-CADENCE-VOICING
     path: docs/m-guide/knowledge/harmony/functional-cadence-and-voicing.md
-    tags: [compose, arrange, harmony, arrangement]
+    tags: [compose, harmony, arrangement]
     serves-steps: [3, 4]
     summary: Chức năng hòa âm, cadence và voicing
 

@@ -86,4 +86,5 @@ Tên tác phẩm/nghệ sĩ = nhãn. Lưu đặc trưng khái quát. Cấm sao c
 
 ## 8. Mẫu tin nhắn user
 
-Xem [artifacts/user-message-ai.md](artifacts/user-message-ai.md).
+Chi tiết + prompt mẫu đầy đủ: [guides/chuc-nang-1-sang-tac.md](guides/chuc-nang-1-sang-tac.md).  
+Cheatsheet ngắn: [artifacts/user-message-ai.md](artifacts/user-message-ai.md).

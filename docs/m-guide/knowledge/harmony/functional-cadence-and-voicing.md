@@ -3,7 +3,7 @@ id: KNOW.HARMONY.FUNCTIONAL-CADENCE-VOICING
 type: knowledge
 status: active
 version: "1.0"
-tags: [compose, harmony, arrangement]
+tags: [compose, arrange, harmony, arrangement]
 serves-steps: [3, 4]
 sources: ["docs/m-guide/knowledge/harmony/basics.md"]
 last-updated: "2026-09-07"

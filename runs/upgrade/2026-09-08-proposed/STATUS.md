@@ -1,0 +1,24 @@
+# Upgrade STATUS
+- type: curator
+- topic: craft-p2 (hook/pre/bridge, modal-pentatonic, drum-bass, intro-outro)
+- status: merged (2026-09-08)
+- merged_by: Auto (agent) — reviewed + path/ID/catalog fixes before merge
+- needs_approval: false (approved via user presenting run for processing)
+- original_proposed_paths_rejected:
+  - docs/m-guide/knowledge/compose/*  (folder không tồn tại trong kho)
+  - docs/m-guide/knowledge/arrange/*  (kho dùng arrangement/ + id KNOW.ARR.*)
+- merged_files:
+  - docs/m-guide/knowledge/lyrics/hook-prechorus-bridge.md
+  - docs/m-guide/knowledge/harmony/modal-pentatonic-vietnamese.md
+  - docs/m-guide/knowledge/arrangement/drum-bass-patterns.md
+  - docs/m-guide/knowledge/arrangement/intro-outro-transition.md
+  - docs/m-guide/catalog.yml (v1.5)
+  - docs/m-guide/knowledge/README.md
+- merge_notes: |
+  - Remap compose/ → lyrics/ + harmony/; arrange/ → arrangement/
+  - IDs: KNOW.LYRICS.HOOK-PRECHORUS-BRIDGE, KNOW.HARMONY.MODAL-PENTATONIC-VI, KNOW.ARR.DRUM-BASS-PATTERNS, KNOW.ARR.INTRO-OUTRO-TRANSITION
+  - Proposed catalog was a fragment → rebuilt full catalog
+  - Dropped weak/vendor-heavy sources; kept generic hints; real markdown tables
+  - Pre-chorus length hint 4–8 bars; ballad caveat on four-on-floor
+  - Run lacked STATUS.md/MERGE.md at root — added after merge
+  - proposed/ synced to final merged content
