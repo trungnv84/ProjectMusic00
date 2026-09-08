@@ -1,0 +1,21 @@
+# MERGE
+
+- from: runs/upgrade/2026-09-08-style-labels-enrich/proposed/
+- to: docs/m-guide/
+- status: merged (2026-09-08)
+- files:
+  - docs/m-guide/knowledge/styles/pop-ballad-generic.md
+  - docs/m-guide/knowledge/styles/vn-vpop-ballad.md
+  - docs/m-guide/knowledge/styles/rock-generic.md
+  - docs/m-guide/knowledge/styles/vn-heroic-march.md
+  - docs/m-guide/knowledge/styles/vn-bolero-tru-tinh.md
+  - docs/m-guide/knowledge/styles/vn-dan-ca-contemporary.md
+  - docs/m-guide/knowledge/styles/vn-vpop-uptempo.md
+  - docs/m-guide/knowledge/styles/vn-acoustic-indie.md
+  - docs/m-guide/knowledge/styles/edm-dance-pop-generic.md
+  - docs/m-guide/knowledge/styles/rnb-soul-generic.md
+  - docs/m-guide/knowledge/styles/jazz-pop-light.md
+  - docs/m-guide/knowledge/styles/hiphop-melodic.md
+  - docs/m-guide/knowledge/styles/folk-acoustic-generic.md
+- catalog: không đụng `docs/m-guide/catalog.yml`
+- note: Run folder giữ làm lịch sử. Không commit/push trong lượt này.
