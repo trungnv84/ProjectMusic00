@@ -69,7 +69,7 @@ Chi tiết: [pipeline/overview.md](pipeline/overview.md).
 
 1. **Meta-prompt** → `01-meta-prompt.md` — dạy AI Bước 2 đọc catalog và sinh 2 prompt + DOC_REFS. Không điền bài hát trừ khi user đã đưa.
 2. **Hai prompt** → `02-compose-prompt.md` + `02-arrange-prompt.md` — chỉ dẫn trang, không nhét nguyên văn kho.
-3. **Sáng tác** → `03-song.musicxml` + notes — lead sheet (lời, giai điệu, hòa âm); không dàn đầy đủ.
+3. **Sáng tác** → `03-song.musicxml` + notes (bắt buộc `lyrics_by_section`) — lead sheet (lời, giai điệu, hòa âm); không dàn đầy đủ.
 4. **Phối khí** → `04-arranged.musicxml` — nhiều part; khóa lời/giai điệu/hòa âm trừ khi user giao quyền.
 
 Mỗi bước dừng để user sửa. Thiếu đầu ra bước trước → user dán bản tương đương.

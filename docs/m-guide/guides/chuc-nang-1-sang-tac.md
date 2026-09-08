@@ -132,7 +132,7 @@ REFERENCE_STYLE: STYLE.VN.VPOP-BALLAD
 Fetch mọi DOC_REFS trong compose-prompt + knowledge musicxml (rules, anti-patterns) + song-request-schema.
 Xuất:
 - runs/compose/<run-id>/03-song.musicxml  (lead sheet: vocal + lyrics + harmony)
-- runs/compose/<run-id>/03-composition-notes.md
+- runs/compose/<run-id>/03-composition-notes.md  (bắt buộc lyrics_by_section — bản lời theo section để duyệt)
 Cấm: full band arrangement; sao chép hook/lời bản quyền; bỏ qua thanh điệu tiếng Việt nếu primary_language = Vietnamese.
 ```
 
@@ -187,6 +187,7 @@ Ghi đề xuất vào runs/upgrade/<ngày-slug>/proposed/. Không sửa docs/m-g
 - [ ] AI đã đọc `for-ai.md` + dùng `catalog.yml` (không dump cả kho)
 - [ ] Mỗi bước có file trong `runs/compose/<run-id>/` (nếu workspace)
 - [ ] Bước 3 = lead sheet; Bước 4 mới full parts
+- [ ] `03-composition-notes.md` có `lyrics_by_section` khớp lời trong MusicXML
 - [ ] Tiếng Việt: có xem tone-melody / syllable-priority khi viết lời+giai điệu
 - [ ] `REFERENCE_STYLE` chỉ là nhãn đặc trưng — không copy bài mẫu
 - [ ] MusicXML: part-list khớp part, measure liên tục, duration > 0, midi-program 1–128

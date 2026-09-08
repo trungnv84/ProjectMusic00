@@ -77,6 +77,108 @@ structure:
     syllabic: "single"
     melisma: false
 
+lyrics_by_section:
+  - section: INTRO
+    measures: "1-4"
+    lines: []
+  - section: VERSE_1
+    measures: "5-14"
+    lines:
+      - "Nắng nghiêng qua ô cửa"
+      - "Gió gọi tên ban mai"
+      - "Mắt em như vì sao"
+      - "Chạm vào tim anh rồi"
+      - "Phố hôm nay trong veo"
+      - "Môi cười như nắng sớm"
+      - "Bàn tay mình chạm khẽ"
+      - "Nghe trời xanh ngân nga"
+      - "Mây trôi qua thật nhẹ"
+      - "Mình bước chung một đường"
+  - section: PRE_CHORUS
+    measures: "15-18"
+    lines:
+      - "Tim reo lên một chút"
+      - "khi em cười bên anh"
+      - "Nghe mùa xuân thức giấc"
+      - "Từ trong đôi mắt xanh"
+  - section: CHORUS
+    measures: "19-28"
+    lines:
+      - "Yêu là vui thế thôi"
+      - "Khi hai ta có nhau"
+      - "Trời trong như mắt em"
+      - "Mây bay qua rất mau"
+      - "Yêu là vui thế thôi"
+      - "Tim ngân lên sắc màu"
+      - "Cho đôi môi biết cười"
+      - "Và ngày xanh biết hát"
+      - "Ta đi qua phố nắng"
+      - "Mơ một trời dịu dàng"
+  - section: VERSE_2
+    measures: "29-38"
+    lines:
+      - "Chiều nghiêng trên vai áo"
+      - "Lá rung theo bước chân"
+      - "Có em bên cạnh nhé"
+      - "Phố thành vườn mê say"
+      - "Ta nghe chim ngoài phố"
+      - "Gọi mùa yêu sang trang"
+      - "Những điều chưa từng nói"
+      - "Bỗng hóa thành dịu dàng"
+      - "Ánh sao treo trên tóc"
+      - "Và mắt em long lanh"
+  - section: PRE_CHORUS_2
+    measures: "39-42"
+    lines:
+      - "Tim reo lên một chút"
+      - "khi em cười bên anh"
+      - "Nghe mùa xuân thức giấc"
+      - "Từ trong đôi mắt xanh"
+  - section: CHORUS_2
+    measures: "43-52"
+    lines:
+      - "Yêu là vui thế thôi"
+      - "Khi hai ta có nhau"
+      - "Trời trong như mắt em"
+      - "Mây bay qua rất mau"
+      - "Yêu là vui thế thôi"
+      - "Tim ngân lên sắc màu"
+      - "Cho đôi môi biết cười"
+      - "Và ngày xanh biết hát"
+      - "Ta đi qua phố nắng"
+      - "Mơ một trời dịu dàng"
+  - section: BRIDGE
+    measures: "53-60"
+    lines:
+      - "Mai nếu mưa ghé qua"
+      - "Ta vẫn cười như nắng"
+      - "Vì trong tim mình có"
+      - "Một trời xanh rất gần"
+      - "Mai nếu ngày đổi gió"
+      - "Tay vẫn tìm tay thôi"
+      - "Mình giữ nhau bằng những"
+      - "Điều bé xinh trên đời"
+  - section: FINAL_CHORUS
+    measures: "61-70"
+    lines:
+      - "Yêu là vui thế thôi"
+      - "Mình trao nhau ước mơ"
+      - "Trời trong theo bước chân"
+      - "Mây bay trên mái nhà"
+      - "Yêu là vui thế thôi"
+      - "Tim ngân lên sắc màu"
+      - "Cho đôi môi biết cười"
+      - "Và ngày xanh biết hát"
+      - "Ta ôm trọn bình minh"
+      - "Mơ một trời có nhau"
+  - section: OUTRO
+    measures: "71-74"
+    lines:
+      - "Yêu là vui thế thôi"
+      - "Mình đi trong nắng mới"
+      - "Tim ngân lên sắc màu"
+      - "Và ngày xanh biết hát"
+
 validation:
   - "MusicXML 4.0 partwise + DTD"
   - "part-list count equals actual parts"

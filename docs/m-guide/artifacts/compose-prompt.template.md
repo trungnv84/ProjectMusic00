@@ -41,4 +41,4 @@ Bạn là Music Composer AI. Viết lời + giai điệu + hòa âm dạng **lea
 ## OUTPUT
 
 1. `03-song.musicxml` — voice + lyrics + harmony/piano reduction
-2. `03-composition-notes.md` — theo template composition-notes
+2. `03-composition-notes.md` — theo template composition-notes (bắt buộc `lyrics_by_section`)

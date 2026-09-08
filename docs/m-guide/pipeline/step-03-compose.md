@@ -5,7 +5,7 @@ status: active
 version: "1.0"
 tags: [pipeline, compose]
 serves-steps: [3]
-last-updated: "2026-09-07"
+last-updated: "2026-09-08"
 ---
 
 # Bước 3 — Sáng tác → MusicXML (lead sheet)
@@ -30,13 +30,13 @@ last-updated: "2026-09-07"
 3. Viết lời + giai điệu + hòa âm (ký hiệu hợp âm và/hoặc piano reduction).
 4. Xuất **MusicXML 4.0 partwise** lead sheet: voice + lyrics + harmony/piano; **không** dàn dựng đầy đủ.
 5. Tuân anti-patterns MusicXML (DTD, part-list khớp part, measure liên tục, midi-program 1–128, duration > 0).
-6. Viết `COMPOSITION_NOTES`.
+6. Viết `COMPOSITION_NOTES` theo template — **bắt buộc** có `lyrics_by_section` (bản lời đọc được theo section, khớp lời trong MusicXML; section không lời → `lines: []`).
 
 ## Output
 
 ```text
 runs/compose/<run-id>/03-song.musicxml
-runs/compose/<run-id>/03-composition-notes.md
+runs/compose/<run-id>/03-composition-notes.md   # gồm lyrics_by_section
 STATUS.md  # step3: done
 ```
 

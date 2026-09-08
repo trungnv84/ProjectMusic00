@@ -2,6 +2,8 @@
 
 Lưu: `runs/compose/<run-id>/03-composition-notes.md` (hoặc arrangement notes).
 
+**Bắt buộc (Bước 3):** có khối `lyrics_by_section` — bản lời đọc được theo section, **khớp** lời gắn nốt trong MusicXML. Mục đích: người duyệt xem/sửa lời mà không cần mở score. Section instrumental → `lines: []`.
+
 ---
 
 ```text
@@ -38,4 +40,28 @@ musicxml_parts:
     name: Voice
   - id: P2
     name: Piano
+
+structure:               # khuyến nghị
+  tempo_bpm:
+  meter: ""
+  key: ""
+  form:
+    - SECTION_NAME: measures a–b
+  lyric_policy:
+    syllable_to_note: "1 Vietnamese syllable → 1 note"  # nếu VN
+    syllabic: "single"
+    melisma: false
+
+lyrics_by_section:       # BẮT BUỘC — mirror lời trong MusicXML
+  - section: INTRO
+    measures: "1-4"
+    lines: []            # instrumental / không lời
+  - section: VERSE_1
+    measures: "5-..."
+    lines:
+      - ""               # mỗi dòng ≈ một câu hát / một cụm measure có lời
+  - section: CHORUS
+    measures: "..."
+    lines:
+      - ""
 ```
