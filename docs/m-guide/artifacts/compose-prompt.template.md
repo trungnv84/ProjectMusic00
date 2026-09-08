@@ -43,7 +43,7 @@ Bạn là Music Composer AI. **Tự sáng tác** lời + giai điệu + hòa âm
 # KNOW.MELODY.ANTI-PATTERNS
 # KNOW.MELODY.QUALITY-GATE
 # KNOW.LYRICS.LYRIC-MELODY-FIT
-# + motif/phrase/contour, vietnamese tone, musicxml, style card
+# + melody motif/phrase/contour, vietnamese tone, musicxml rules/anti-patterns/safe-patterns/importer-profile, style card
 - id:
   path:
   url:

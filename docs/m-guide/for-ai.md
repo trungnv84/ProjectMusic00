@@ -56,8 +56,8 @@ Luôn: file này, [catalog.yml](catalog.yml), [meta/standards.md](meta/standards
 |------|------|
 | Bước 1 | `prompt-craft/*`, `artifacts/meta-prompt.template.md`, `pipeline/step-01-meta-prompt.md` |
 | Bước 2 | meta-prompt (user), `pipeline/step-02-specialized-prompts.md`, catalog đủ, template compose/arrange |
-| Bước 3 | compose-prompt, mọi URL `DOC_REFS` compose, `pipeline/step-03-compose.md`, `meta/song-request-schema.md`, knowledge tagged compose/musicxml **+** melody-invention, anti-patterns, quality-gate, lyric-melody-fit, composition-notes template |
-| Bước 4 | MusicXML Bước 3, arrange-prompt, `DOC_REFS` arrange, `pipeline/step-04-arrange.md`, knowledge arrange/musicxml (section-energy, dynamics) |
+| Bước 3 | compose-prompt, mọi URL `DOC_REFS` compose, `pipeline/step-03-compose.md`, `meta/song-request-schema.md`, knowledge tagged compose/musicxml **+** melody-invention, anti-patterns, quality-gate, lyric-melody-fit, musicxml safe-patterns/importer-profile, composition-notes template |
+| Bước 4 | MusicXML Bước 3, arrange-prompt, `DOC_REFS` arrange, `pipeline/step-04-arrange.md`, knowledge arrange/musicxml (section-energy, dynamics, **safe-patterns, importer-profile**) |
 | Curator | `prompts/curator.md`, `meta/purpose.md`, `meta/page-template.md` |
 | Improver | `prompts/improver.md`, `artifacts/run-review.template.md`, trang liên quan lỗi |
 | Merge | Chỉ khi user yêu cầu: `pipeline/merge-policy.md` + `runs/upgrade/<id>/` |
@@ -71,7 +71,7 @@ Chi tiết: [pipeline/overview.md](pipeline/overview.md).
 1. **Meta-prompt** → `01-meta-prompt.md` — dạy AI Bước 2 đọc catalog và sinh 2 prompt + DOC_REFS. Không điền bài hát trừ khi user đã đưa.
 2. **Hai prompt** → `02-compose-prompt.md` + `02-arrange-prompt.md` — chỉ dẫn trang, không nhét nguyên văn kho.
 3. **Sáng tác** → `03-song.musicxml` + notes (bắt buộc `lyrics_by_section` + `music_quality_gate`) trong **một lượt** — invent giai điệu, không file `03a`; lead sheet; không dàn đầy đủ. Gate FAIL → viết lại cả lead sheet.
-4. **Phối khí** → `04-arranged.musicxml` — nhiều part; khóa lời/giai điệu/hòa âm; làm rõ contrast section, không đệm một pattern đều.
+4. **Phối khí** → `04-arranged.musicxml` — nhiều part; khóa lời/giai điệu/hòa âm; contrast section; **bắt buộc** `importer_self_check PASS` (Flat) trước khi step4 done.
 
 Mỗi bước dừng để user sửa. Thiếu đầu ra bước trước → user dán bản tương đương.
 

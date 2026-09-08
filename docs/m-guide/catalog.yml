@@ -6,7 +6,7 @@
 # - AI dựng URL: REPO_RAW + "/" + path (xem meta/link-scheme.md)
 # - Cấm path dưới archive/
 
-version: "1.8"
+version: "1.10"
 updated: "2026-09-08"
 
 pages:
@@ -80,7 +80,7 @@ pages:
     path: docs/m-guide/pipeline/step-04-arrange.md
     tags: [pipeline, arrange]
     serves-steps: [4]
-    summary: Playbook Bước 4 phối khí một lượt — giữ contrast section
+    summary: Playbook Bước 4 — phối khí + importer_self_check Flat bắt buộc
 
   - id: PIPE.MERGE-POLICY
     path: docs/m-guide/pipeline/merge-policy.md
@@ -308,13 +308,31 @@ pages:
     path: docs/m-guide/knowledge/musicxml/rules.md
     tags: [compose, arrange, musicxml]
     serves-steps: [3, 4]
-    summary: Quy tắc xuất MusicXML 4.0
+    summary: Quy tắc xuất MusicXML 4.0 (profile kho)
+
+  - id: KNOW.MUSICXML.CANONICAL
+    path: docs/m-guide/knowledge/musicxml/canonical-source.md
+    tags: [compose, arrange, musicxml]
+    serves-steps: [3, 4]
+    summary: Nguồn chuẩn W3C MusicXML 4.0 — không viết từ điển riêng
+
+  - id: KNOW.MUSICXML.SAFE-PATTERNS
+    path: docs/m-guide/knowledge/musicxml/safe-patterns.md
+    tags: [compose, arrange, musicxml]
+    serves-steps: [3, 4]
+    summary: Mẫu XML an toàn (direction, score-instrument, subset)
+
+  - id: KNOW.MUSICXML.IMPORTER-PROFILE
+    path: docs/m-guide/knowledge/musicxml/importer-profile.md
+    tags: [compose, arrange, musicxml]
+    serves-steps: [3, 4]
+    summary: Lỗi Flat/importer đã gặp — direction-type, drums
 
   - id: KNOW.MUSICXML.ANTI-PATTERNS
     path: docs/m-guide/knowledge/musicxml/anti-patterns.md
     tags: [compose, arrange, musicxml]
     serves-steps: [3, 4]
-    summary: Anti-pattern MusicXML cấm (mở rộng)
+    summary: Anti-pattern MusicXML cấm (direction-type lẫn, thiếu score-instrument)
 
   - id: KNOW.MUSICXML.STRUCTURE-VOICES
     path: docs/m-guide/knowledge/musicxml/structure-and-voices.md

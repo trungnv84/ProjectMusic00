@@ -37,12 +37,12 @@ Compose-prompt phải gồm:
 
 Arrange-prompt phải gồm:
 
-- Vai trò: Arranger / orchestrator — một lượt Bước 4
-- Input bắt buộc: MusicXML Bước 3
-- Khóa lời / giai điệu / hòa âm trừ khi user giao quyền
-- Làm rõ contrast section; cấm một pattern đệm đều mọi section
-- DOC_REFS tags: arrange, arrangement, musicxml, style
-- Output: MusicXML nhiều part; part-list khớp part; measure 1→N
+- Vai trò: Arranger — một lượt Bước 4; file phải import được Flat
+- Input: MusicXML Bước 3; khóa lyric/melody/harmony
+- Contrast section; cấm pattern đệm đều
+- **DOC_REFS bắt buộc:** SAFE-PATTERNS, IMPORTER-PROFILE, ANTI-PATTERNS (+ arrangement/style)
+- MUST NOT: mixed direction-type; thiếu score-instrument; complex unpitched kit
+- Output: `04-arranged.musicxml` + notes có `importer_self_check: PASS`
 
 ## DOC_REFS_RULES
 

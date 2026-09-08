@@ -21,6 +21,7 @@ last-updated: "2026-09-08"
 
 - Không đổi lyric / melody / harmony đã locked chỉ để khớp một pattern gợi ý.
 - Tôn trọng instrumentation đã DEFINED (nếu không có drums/bass thì bỏ qua trang này).
+- **Importer (Flat):** trang này là **ý tưởng groove**, không phải giấy phép xuất kit `unpitched` đa instrument. Mặc định Bước 4: **omit drums** hoặc 1 sound tối giản theo [safe-patterns](../musicxml/safe-patterns.md) / [importer-profile](../musicxml/importer-profile.md). Kit GM đầy đủ → rủi ro Flat reject (đã gặp trên run v2).
 
 ## Hints
 

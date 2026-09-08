@@ -11,5 +11,5 @@ Trang kiến thức theo khía cạnh. Mục lục máy: [../catalog.yml](../cat
 | vocal/ | Bè hát, breath, melisma, techniques |
 | vietnamese/ | Thanh điệu, vần/thể thơ, ưu tiên xung đột |
 | arrangement/ | Phối khí, energy, dynamics, drum/bass, intro–outro |
-| musicxml/ | Rules, anti-patterns, structure, lyric XML/encoding, performance markings, checklist |
+| musicxml/ | Rules, canonical W3C link, safe-patterns, anti-patterns, importer Flat, structure, lyrics encoding, checklist |
 | styles/ | Thẻ phong cách (khái quát) |

@@ -189,7 +189,9 @@ Ghi đề xuất vào runs/upgrade/<ngày-slug>/proposed/. Không sửa docs/m-g
 - [ ] `03-composition-notes.md` có `lyrics_by_section` + `music_quality_gate: PASS`
 - [ ] Tiếng Việt: tone-melody (transitions) + lyric-melody-fit + speak-test; giai điệu **invent** không skeleton lặp
 - [ ] `REFERENCE_STYLE` echo đúng id trong notes — không copy bài mẫu
-- [ ] MusicXML: pretty-print; part-list khớp part, measure liên tục, duration > 0, midi-program 1–128
+- [ ] MusicXML: pretty-print; part-list khớp part; measure liên tục; duration > 0; midi-program 1–128
+- [ ] Bước 4: `04-arrangement-notes.md` có `importer_self_check: PASS` (không mixed direction-type; có score-instrument; không kit trống phức tạp)
+- [ ] Flat/importer: đã đọc SAFE-PATTERNS + IMPORTER-PROFILE trước khi xuất arranged
 
 ## Liên kết thêm
 
