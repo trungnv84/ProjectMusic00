@@ -70,8 +70,8 @@ Chi tiết: [pipeline/overview.md](pipeline/overview.md).
 
 1. **Meta-prompt** → `01-meta-prompt.md` — dạy AI Bước 2 đọc catalog và sinh 2 prompt + DOC_REFS. Không điền bài hát trừ khi user đã đưa.
 2. **Hai prompt** → `02-compose-prompt.md` + `02-arrange-prompt.md` — chỉ dẫn trang, không nhét nguyên văn kho.
-3. **Sáng tác** → `03-song.musicxml` + notes (bắt buộc `lyrics_by_section` + `music_quality_gate` gồm **`REQUIRE_PIANO_TEXTURE`** + `piano_texture`) trong **một lượt** — invent giai điệu, không file `03a`; lead sheet; piano reduction nghe được (không pad whole-note trên sung sections); không dàn đầy đủ. Gate FAIL → viết lại cả lead sheet (kể cả piano texture).
-4. **Phối khí** → `04-arranged.musicxml` — nhiều part; khóa lời/giai điệu/**progression**; **được/phải** viết lại piano texture nếu P2 pad; contrast section; **bắt buộc** `importer_self_check PASS` **và** `piano_texture_check PASS` trước khi step4 done.
+3. **Sáng tác** → `03-song.musicxml` + notes (bắt buộc `lyrics_by_section` + `music_quality_gate`) trong **một lượt** — invent giai điệu, không file `03a`; lead sheet; không dàn đầy đủ. Gate FAIL → viết lại cả lead sheet.
+4. **Phối khí** → `04-arranged.musicxml` — nhiều part; khóa lời/giai điệu/**progression**; **được** viết lại piano texture; contrast section; **bắt buộc** `importer_self_check PASS` (Flat) trước khi step4 done.
 
 Mỗi bước dừng để user sửa. Thiếu đầu ra bước trước → user dán bản tương đương.
 

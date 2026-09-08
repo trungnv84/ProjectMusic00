@@ -74,13 +74,13 @@ pages:
     path: docs/m-guide/pipeline/step-03-compose.md
     tags: [pipeline, compose]
     serves-steps: [3]
-    summary: Playbook Bước 3 — lead sheet một lượt + quality gate (gồm REQUIRE_PIANO_TEXTURE) + piano reduction nghe được
+    summary: Playbook Bước 3 — lead sheet một lượt + quality gate + piano reduction nghe được
 
   - id: PIPE.STEP-04
     path: docs/m-guide/pipeline/step-04-arrange.md
     tags: [pipeline, arrange]
     serves-steps: [4]
-    summary: Playbook Bước 4 — phối khí; lock progression; bắt buộc rewrite/bù piano nếu pad; Flat + piano_texture_check
+    summary: Playbook Bước 4 — phối khí; lock progression; cho phép rewrite piano texture; Flat self-check
 
   - id: PIPE.MERGE-POLICY
     path: docs/m-guide/pipeline/merge-policy.md
@@ -170,7 +170,7 @@ pages:
     path: docs/m-guide/knowledge/melody/musical-quality-gate.md
     tags: [compose, melody, lyrics, vietnamese]
     serves-steps: [3]
-    summary: Music quality gate PASS/FAIL trước khi coi Bước 3 xong (gồm REQUIRE_PIANO_TEXTURE)
+    summary: Music quality gate PASS/FAIL trước khi coi Bước 3 xong
 
   - id: KNOW.HARMONY.BASICS
     path: docs/m-guide/knowledge/harmony/basics.md
@@ -182,7 +182,7 @@ pages:
     path: docs/m-guide/knowledge/harmony/piano-reduction.md
     tags: [compose, arrange, harmony]
     serves-steps: [3, 4]
-    summary: Lead-sheet piano vs arranged piano — cấm pad; gate + step4 piano_texture_check
+    summary: Lead-sheet piano vs arranged piano — cấm whole-note pad toàn bài
 
   - id: KNOW.HARMONY.FUNCTIONAL-CADENCE-VOICING
     path: docs/m-guide/knowledge/harmony/functional-cadence-and-voicing.md

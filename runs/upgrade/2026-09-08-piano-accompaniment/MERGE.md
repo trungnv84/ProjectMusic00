@@ -1,0 +1,26 @@
+# MERGE
+
+- from: runs/upgrade/2026-09-08-piano-accompaniment/proposed/
+- to: docs/m-guide/
+- status: merged (2026-09-08) — user requested apply vào tài liệu hiện tại
+- files:
+  - docs/m-guide/knowledge/harmony/piano-reduction.md (new)
+  - docs/m-guide/knowledge/harmony/basics.md
+  - docs/m-guide/knowledge/styles/vn-vpop-uptempo.md
+  - docs/m-guide/knowledge/README.md
+  - docs/m-guide/pipeline/step-03-compose.md
+  - docs/m-guide/pipeline/step-04-arrange.md
+  - docs/m-guide/artifacts/compose-prompt.template.md
+  - docs/m-guide/artifacts/arrange-prompt.template.md
+  - docs/m-guide/artifacts/composition-notes.template.md
+  - docs/m-guide/artifacts/arrangement-notes.template.md
+  - docs/m-guide/catalog.yml
+  - docs/m-guide/for-ai.md
+  - docs/m-guide/guides/chuc-nang-1-sang-tac.md
+- needs_approval_items:
+  - Piano reduction pulse minimum (half-note / broken-comp) on sung sections
+  - Step 4 lock split: progression locked, piano texture allowed
+- instruction: Đã merge theo yêu cầu user. Giữ thư mục upgrade (merge-policy). Chạy lại Bước 3+4 cho bài mới / v3 nếu muốn piano nghe được.
+- not_merged:
+  - meta/standards.md (cố ý không sửa)
+  - catalog flag requires_rhythmic_piano (deferred)

@@ -2,7 +2,7 @@
 id: META.GUIDE-COMPOSE
 type: meta
 status: active
-version: "1.3"
+version: "1.2"
 tags: [meta, compose, guide]
 serves-steps: [1, 2, 3, 4]
 sources: []
@@ -131,9 +131,9 @@ REFERENCE_STYLE: STYLE.VN.VPOP-BALLAD
 
 Fetch mọi DOC_REFS + melody-invention, anti-patterns, quality-gate, lyric-melody-fit + musicxml + song-request-schema.
 Xuất (cùng lượt):
-- runs/compose/<run-id>/03-song.musicxml  (lead sheet pretty-print; piano pulse/broken — không pad whole-note sung sections)
-- runs/compose/<run-id>/03-composition-notes.md  (lyrics_by_section + prosody_audit + music_quality_gate gồm REQUIRE_PIANO_TEXTURE + piano_texture)
-Cấm: file 03a; full band; sao chép hook/lời bản quyền; điền lời vào một mẫu nốt lặp; patch nốt sau gate FAIL; PASS khi thiếu piano_texture.
+- runs/compose/<run-id>/03-song.musicxml  (lead sheet pretty-print; tự invent giai điệu — không skeleton mẫu)
+- runs/compose/<run-id>/03-composition-notes.md  (lyrics_by_section + prosody_audit + music_quality_gate)
+Cấm: file 03a; full band; sao chép hook/lời bản quyền; điền lời vào một mẫu nốt lặp; patch nốt sau gate FAIL.
 ```
 ### E. Chỉ Bước 4 (phối khí)
 
@@ -144,11 +144,10 @@ Arrange-prompt: runs/compose/<run-id>/02-arrange-prompt.md
 Lead sheet khóa: runs/compose/<run-id>/03-song.musicxml
 (+ 03-composition-notes.md nếu có)
 
-Khóa lyric / melody / harmony **progression** từ Bước 3 — không đổi trừ khi tôi giao quyền.
-Được viết lại piano texture; nếu P2 pad-only thì bắt buộc rewrite hoặc thêm pitched groove.
+Khóa lyric / melody / harmony từ Bước 3 — không đổi trừ khi tôi giao quyền.
 Xuất:
 - runs/compose/<run-id>/04-arranged.musicxml
-- runs/compose/<run-id>/04-arrangement-notes.md  (importer_self_check + piano_texture_check PASS)
+- runs/compose/<run-id>/04-arrangement-notes.md
 Dùng DOC_REFS arrange + style card + trang arrangement (orchestration, section-energy, drum-bass, intro-outro…) khi được trỏ.
 ```
 
@@ -187,10 +186,9 @@ Ghi đề xuất vào runs/upgrade/<ngày-slug>/proposed/. Không sửa docs/m-g
 - [ ] AI đã đọc `for-ai.md` + dùng `catalog.yml` (không dump cả kho; không bịa path)
 - [ ] Mỗi bước có file trong `runs/compose/<run-id>/` (nếu workspace)
 - [ ] Bước 3 = lead sheet một lượt (XML + notes + gate + `piano_texture`); Bước 4 mới full parts
-- [ ] `03-composition-notes.md` có `lyrics_by_section` + `music_quality_gate: PASS` gồm `REQUIRE_PIANO_TEXTURE`
-- [ ] Piano reduction: sung sections có pulse ≥ half-note / broken-comp — không whole-note pad toàn bài; thiếu `piano_texture` = FAIL
-- [ ] Bước 4: khóa progression (**không** khóa P2 pad); `piano_texture_policy` + `piano_texture_check: PASS`; `importer_self_check: PASS` (không mixed direction-type; có score-instrument; không kit trống phức tạp)
-- [ ] Bước 4: cấm “P2 semantically unchanged” / `action: unchanged` khi input pad-dominant
+- [ ] `03-composition-notes.md` có `lyrics_by_section` + `music_quality_gate: PASS`
+- [ ] Piano reduction: sung sections có pulse ≥ half-note / broken-comp — không whole-note pad toàn bài
+- [ ] Bước 4: khóa progression; `piano_texture_policy`; `importer_self_check: PASS` (không mixed direction-type; có score-instrument; không kit trống phức tạp)
 - [ ] Tiếng Việt: tone-melody (transitions) + lyric-melody-fit + speak-test; giai điệu **invent** không skeleton lặp
 - [ ] `REFERENCE_STYLE` echo đúng id trong notes — không copy bài mẫu
 - [ ] MusicXML: pretty-print; part-list khớp part; measure liên tục; duration > 0; midi-program 1–128

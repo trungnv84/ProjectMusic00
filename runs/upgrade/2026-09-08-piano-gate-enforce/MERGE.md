@@ -1,0 +1,23 @@
+# MERGE
+
+- from: runs/upgrade/2026-09-08-piano-gate-enforce/proposed/
+- to: docs/m-guide/
+- status: merged (2026-09-08) — user asked to cải tiến / sửa vấn đề piano pad + Bước 4 lock P2
+- files:
+  - docs/m-guide/knowledge/melody/musical-quality-gate.md
+  - docs/m-guide/knowledge/harmony/piano-reduction.md
+  - docs/m-guide/knowledge/styles/vn-vpop-ballad.md
+  - docs/m-guide/pipeline/step-03-compose.md
+  - docs/m-guide/pipeline/step-04-arrange.md
+  - docs/m-guide/artifacts/composition-notes.template.md
+  - docs/m-guide/artifacts/arrangement-notes.template.md
+  - docs/m-guide/artifacts/compose-prompt.template.md
+  - docs/m-guide/artifacts/arrange-prompt.template.md
+  - docs/m-guide/for-ai.md
+  - docs/m-guide/guides/chuc-nang-1-sang-tac.md
+  - docs/m-guide/catalog.yml
+- needs_approval_items:
+  - REQUIRE_PIANO_TEXTURE hard gate
+  - step4 piano_texture_check required for done
+- instruction: Đã merge. Giữ thư mục upgrade. Chạy lại Bước 3 (và 4) trên compose run mới / v3 — tài liệu cũ không tự sửa MusicXML.
+- not_merged: []

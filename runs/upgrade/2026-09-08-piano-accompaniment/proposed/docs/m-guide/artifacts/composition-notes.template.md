@@ -65,7 +65,6 @@ music_quality_gate:
     register_development: ok|weak|fail
     cadential_variety: ok|weak|fail
     harmonic_motion: ok|weak|fail
-    piano_accompaniment: ok|weak|fail   # fail nếu pad whole-note / thiếu pitched harmony pulse
     lyric_melody_fit: ok|weak|fail
     vietnamese_tone_melody: ok|weak|fail
     style_consistency: ok|weak|fail
@@ -75,11 +74,10 @@ music_quality_gate:
     REQUIRE_FINAL_CHORUS_DEVELOPMENT: pass|fail
     REQUIRE_SPEAK_TEST: pass|fail
     REQUIRE_STYLE_ECHO: pass|fail
-    REQUIRE_PIANO_TEXTURE: pass|fail    # thiếu piano_texture hoặc sung_sections_ok false → fail
   evidence: ""
-  if_fail: "rewrite whole lead sheet with new motifs AND fix piano texture — do not patch isolated notes; do not defer pad fix to step 4"
+  if_fail: "rewrite whole lead sheet with new motifs — do not patch isolated notes"
 
-piano_texture:            # BẮT BUỘC — KNOW.HARMONY.PIANO-REDUCTION (thiếu = gate FAIL)
+piano_texture:            # BẮT BUỘC — KNOW.HARMONY.PIANO-REDUCTION
   pattern: ""             # half-pulse | quarter-pulse | broken | alberti | comp | arpeggio | pad-limited
   sung_sections_ok: true  # false nếu chỉ whole-note ở phần có lời → FAIL / phải sửa
   pad_only_sections: []   # ví dụ: [INTRO, OUTRO] — ghi rõ nếu dùng whole-note pad
