@@ -1,13 +1,13 @@
-# Project Execution Status
+# STATUS — run 2026-09-08-nang-som-tinh-khoi
 
-- **Project Title**: Nắng Sớm Tinh Khôi
-- **Slug**: `2026-09-08-nang-som-tinh-khoi`
-- **Current Pipeline Step**: Step 01 - Meta Prompt Generation
-- **Execution Date**: 2026-09-08
-- **Status**: Completed (Step 01 Output Ready)
+| Step | Status | Artifact |
+|------|--------|----------|
+| 1 Meta-prompt | done (input) | 01-meta-prompt.md |
+| 2 Specialized prompts | **done** | 02-compose-prompt.md, 02-arrange-prompt.md |
+| 3 Compose | pending | — |
+| 4 Arrange | pending | — |
 
-## Pipeline Roadmap
-- [x] **Step 01**: Meta-Prompt Generation (`runs/compose/2026-09-08-nang-som-tinh-khoi/01-meta-prompt.md`)
-- [ ] **Step 02**: Prompt Crafting (Catalog Lookup & Generation of Compose/Arrange Prompts)
-- [ ] **Step 03**: Song Composition (Melody, Lyric Syllabification & MusicXML 4.0 Generation)
-- [ ] **Step 04**: Arrangement & Finalization
+Notes:
+- DOC_REFS lấy từ catalog.yml (URL raw), không nhét nguyên văn kho.
+- Không viết MusicXML ở bước này.
+- Title: Nắng Sớm Tinh Khôi | STYLE.VN.VPOP-BALLAD | V-Pop ballad | ngôi thứ ba | trong sáng tinh nghịch.
