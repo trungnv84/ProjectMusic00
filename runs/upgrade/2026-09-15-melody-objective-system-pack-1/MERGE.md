@@ -1,0 +1,14 @@
+# MERGE
+- from: `runs/upgrade/2026-09-15-melody-objective-system/proposed/`
+- to: `docs/m-guide/`
+- package: 1
+- files:
+  - `docs/m-guide/knowledge/melody/objective-metrics.md`
+  - `docs/m-guide/knowledge/melody/musical-quality-gate.md`
+  - `docs/m-guide/pipeline/step-03-compose.md`
+  - `docs/m-guide/catalog.yml`
+- needs_approval_items:
+  - `objective_melody_audit` becomes a new enforced quality contract.
+  - The metric thresholds are proposed hard constraints and therefore require user approval.
+  - Step 3 status semantics become stricter: missing objective audit is FAIL.
+- instruction: Chỉ merge khi user yêu cầu rõ ràng.

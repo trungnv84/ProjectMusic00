@@ -1,0 +1,17 @@
+# Upgrade STATUS
+- type: improver
+- related_compose_run:
+  - runs/compose/2026-09-08-vi-yeu-la-vui-v2/
+  - runs/compose/2026-09-08-vi-yeu-la-vui-v3/
+  - runs/compose/2026-09-08-vi-yeu-la-vui-v4/
+- status: proposed
+- layers: [knowledge, pipeline, catalog]
+- package: 1
+- scope: objective melody quality measurement and auditable gate evidence
+- excluded_packages:
+  - multi-candidate generation/selection
+  - semantic lyric gate
+  - piano-reduction redesign
+  - Step 4 arrangement changes
+- needs-approval: true
+- merge: forbidden until user explicitly approves

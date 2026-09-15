@@ -1,0 +1,12 @@
+# Package 1 catalog proposal
+# This is an insertion patch, not a replacement of the current catalog.
+# Target: docs/m-guide/catalog.yml
+
+operation: insert_after
+after_id: KNOW.MELODY.INVENTION
+entry:
+  id: KNOW.MELODY.OBJECTIVE-METRICS
+  path: docs/m-guide/knowledge/melody/objective-metrics.md
+  tags: [compose, melody, validation]
+  serves-steps: [3]
+  summary: Objective melody metrics và canonical audit từ MusicXML

@@ -1,0 +1,10 @@
+Upgrade: runs/upgrade/2026-09-15-melody-objective-system
+Package: 1 — objective melody quality measurement
+Status: proposed
+Merge: forbidden until explicit user approval
+
+Included target patches:
+- docs/m-guide/knowledge/melody/objective-metrics.md (new)
+- docs/m-guide/knowledge/melody/musical-quality-gate.md (update)
+- docs/m-guide/pipeline/step-03-compose.md (update)
+- docs/m-guide/catalog.yml (insertion patch)
