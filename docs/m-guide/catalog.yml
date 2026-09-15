@@ -6,8 +6,8 @@
 # - AI dựng URL: REPO_RAW + "/" + path (xem meta/link-scheme.md)
 # - Cấm path dưới archive/
 
-version: "1.10"
-updated: "2026-09-08"
+version: "1.11"
+updated: "2026-09-14"
 
 pages:
   - id: META.PURPOSE
@@ -74,7 +74,7 @@ pages:
     path: docs/m-guide/pipeline/step-03-compose.md
     tags: [pipeline, compose]
     serves-steps: [3]
-    summary: Playbook Bước 3 — lead sheet một lượt + quality gate (gồm REQUIRE_PIANO_TEXTURE) + piano reduction nghe được
+    summary: Playbook Bước 3 — lead sheet một lượt + quality gate (gồm REQUIRE_PIANO_TEXTURE, REQUIRE_CATCHY_HOOK, REQUIRE_MELODIC_COHERENCE) + invent hook cell catchy trước Chorus; thiếu field notes bắt buộc = tự động FAIL
 
   - id: PIPE.STEP-04
     path: docs/m-guide/pipeline/step-04-arrange.md
@@ -152,7 +152,13 @@ pages:
     path: docs/m-guide/knowledge/melody/melody-invention.md
     tags: [compose, melody]
     serves-steps: [3]
-    summary: Tự sáng tác giai điệu — cấm điền lời vào skeleton mẫu
+    summary: Tự sáng tác giai điệu — cấm điền lời vào skeleton mẫu; bắt buộc invent hook cell catchy trước Chorus
+
+  - id: KNOW.MELODY.CATCHINESS
+    path: docs/m-guide/knowledge/melody/catchiness.md
+    tags: [compose, melody, lyrics, rhythm-form]
+    serves-steps: [3]
+    summary: Đặc trưng giai điệu catchy — hook economy, clear contour, rhythmic identity, repetition-with-variation, vị trí hook nhất quán, tương phản trước hook; tiêu chí tích cực, bổ sung cho anti-patterns
 
   - id: KNOW.MELODY.COMPOSITION-PLANNING
     path: docs/m-guide/knowledge/melody/composition-planning.md
@@ -164,13 +170,13 @@ pages:
     path: docs/m-guide/knowledge/melody/anti-patterns.md
     tags: [compose, melody]
     serves-steps: [3]
-    summary: Anti-pattern giai điệu — lặp skeleton, bridge giả, tone offset máy móc
+    summary: Anti-pattern giai điệu — lặp skeleton, bridge giả, tone offset máy móc, verse-pair clone qua reprise, phrase rời rạc, lặp không identity
 
   - id: KNOW.MELODY.QUALITY-GATE
     path: docs/m-guide/knowledge/melody/musical-quality-gate.md
     tags: [compose, melody, lyrics, vietnamese]
     serves-steps: [3]
-    summary: Music quality gate PASS/FAIL trước khi coi Bước 3 xong (gồm REQUIRE_PIANO_TEXTURE)
+    summary: Music quality gate PASS/FAIL trước khi coi Bước 3 xong (gồm REQUIRE_PIANO_TEXTURE, REQUIRE_CATCHY_HOOK, REQUIRE_MELODIC_COHERENCE)
 
   - id: KNOW.HARMONY.BASICS
     path: docs/m-guide/knowledge/harmony/basics.md

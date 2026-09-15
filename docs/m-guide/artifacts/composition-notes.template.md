@@ -40,6 +40,8 @@ hook_melody_cell:
   pitches: ""
   rhythm: ""
   lyric_hook: ""
+  position_in_phrase: ""      # đầu câu | cuối câu — phải nhất quán qua các lần lặp Chorus
+  catchiness_evidence: ""     # contour type, limited pitch set?, rhythmic feature, biến đổi gì ở mỗi lần lặp
 
 section_contrast_map:
   - section: ""
@@ -62,6 +64,7 @@ music_quality_gate:
     section_contrast: ok|weak|fail
     rhythmic_variety: ok|weak|fail
     hook_distinctiveness: ok|weak|fail
+    melodic_coherence: ok|weak|fail
     register_development: ok|weak|fail
     cadential_variety: ok|weak|fail
     harmonic_motion: ok|weak|fail
@@ -71,6 +74,8 @@ music_quality_gate:
     style_consistency: ok|weak|fail
   thresholds:
     REQUIRE_CHORUS_HOOK: pass|fail
+    REQUIRE_CATCHY_HOOK: pass|fail       # xem KNOW.MELODY.CATCHINESS — thiếu evidence = fail
+    REQUIRE_MELODIC_COHERENCE: pass|fail # phrase cùng section phải chia sẻ DNA motif
     REQUIRE_BRIDGE_CONTRAST: pass|fail
     REQUIRE_FINAL_CHORUS_DEVELOPMENT: pass|fail
     REQUIRE_SPEAK_TEST: pass|fail
