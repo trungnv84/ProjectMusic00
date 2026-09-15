@@ -1,0 +1,6 @@
+# Proposed catalog patch — add one page entry to pages:
+- id: KNOW.MELODY.CATCHINESS
+  path: docs/m-guide/knowledge/melody/catchiness.md
+  tags: [compose, melody, lyrics, rhythm-form]
+  serves-steps: [3]
+  summary: Catchiness — hook salience, rhythmic identity, memorability, singability, repetition-with-variation, tension/release và reference-song analysis

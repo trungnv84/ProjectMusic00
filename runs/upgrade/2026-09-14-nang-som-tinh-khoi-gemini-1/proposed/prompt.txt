@@ -1,0 +1,7 @@
+Style Prompt:
+Upbeat pop, catchy hook, syncopated rhythm, bright acoustic guitar mixed with synth, energetic, radio hit, groovy bassline, clear melodic arc.
+
+Instructions for AI:
+- Focus on making the [Chorus] extremely catchy with repetitive but dynamic phrasing.
+- Ensure smooth transitions between the [Verse] (storytelling, lower pitch) and [Chorus] (high energy, memorable hook).
+- Avoid monotonous melodies; use syncopation and slight pauses for a bouncy, modern pop feel.
