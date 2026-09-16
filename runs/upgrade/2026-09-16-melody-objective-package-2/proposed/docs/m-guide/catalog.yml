@@ -1,0 +1,24 @@
+# Package 2 catalog proposal
+# Insertion patch for docs/m-guide/catalog.yml; do not replace the catalog wholesale.
+# Existing catalog version observed on 2026-09-16: 1.11
+# Proposed version after merge: 1.12
+
+operation: insert
+entries:
+  - id: KNOW.MELODY.SINGABILITY
+    path: docs/m-guide/knowledge/melody/singability.md
+    tags: [compose, melody, vocal]
+    serves-steps: [3]
+    summary: Objective singability — tessitura, leaps, breath, lyric delivery và phân biệt dễ hát với nhàm chán
+
+  - id: KNOW.MELODY.EMOTIONAL-CONTOUR
+    path: docs/m-guide/knowledge/melody/emotional-contour.md
+    tags: [compose, melody, emotion]
+    serves-steps: [3]
+    summary: Objective emotional contour — quan hệ giữa melodic direction và emotional arc, dùng tendencies thay vì công thức cứng
+
+  - id: KNOW.MELODY.TENSION-RELEASE
+    path: docs/m-guide/knowledge/melody/tension-release.md
+    tags: [compose, melody, harmony, rhythm-form]
+    serves-steps: [3]
+    summary: Objective tension-release — buildup, delay, peak và release ở mức phrase/section

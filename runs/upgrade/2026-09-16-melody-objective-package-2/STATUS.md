@@ -1,0 +1,13 @@
+# Upgrade STATUS
+- type: improver
+- related_compose_run:
+  - runs/compose/2026-09-08-vi-yeu-la-vui-v3/
+  - runs/compose/2026-09-08-vi-yeu-la-vui-v4/
+  - runs/compose/2026-09-08-vi-yeu-la-vui-v2/
+- status: proposed
+- package: 2
+- layers: [knowledge]
+- scope: [singability, emotional-contour, tension-release, catalog]
+- date: 2026-09-16
+- dependency: runs/upgrade/2026-09-15-melody-objective-system/ (Package 1 mechanism/schema proposal)
+- merge: forbidden until user explicitly approves

@@ -1,0 +1,13 @@
+runs/upgrade/2026-09-16-melody-objective-package-2/
+├── STATUS.md
+├── run-review.md
+├── changelog.md
+├── MERGE.md
+├── MANIFEST.txt
+└── proposed/
+    └── docs/m-guide/
+        ├── catalog.yml
+        └── knowledge/melody/
+            ├── singability.md
+            ├── emotional-contour.md
+            └── tension-release.md
