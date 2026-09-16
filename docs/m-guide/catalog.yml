@@ -160,24 +160,6 @@ pages:
     serves-steps: [3]
     summary: Đặc trưng giai điệu catchy — hook economy, clear contour, rhythmic identity, repetition-with-variation, vị trí hook nhất quán, tương phản trước hook; tiêu chí tích cực, bổ sung cho anti-patterns
 
-  - id: KNOW.MELODY.SINGABILITY
-    path: docs/m-guide/knowledge/melody/singability.md
-    tags: [compose, melody, vocal]
-    serves-steps: [3]
-    summary: Objective singability — tessitura, leaps, breath, lyric delivery và phân biệt dễ hát với nhàm chán
-
-  - id: KNOW.MELODY.EMOTIONAL-CONTOUR
-    path: docs/m-guide/knowledge/melody/emotional-contour.md
-    tags: [compose, melody, emotion]
-    serves-steps: [3]
-    summary: Objective emotional contour — quan hệ giữa melodic direction và emotional arc, dùng tendencies thay vì công thức cứng
-
-  - id: KNOW.MELODY.TENSION-RELEASE
-    path: docs/m-guide/knowledge/melody/tension-release.md
-    tags: [compose, melody, harmony, rhythm-form]
-    serves-steps: [3]
-    summary: Objective tension-release — buildup, delay, peak và release ở mức phrase/section
-
   - id: KNOW.MELODY.COMPOSITION-PLANNING
     path: docs/m-guide/knowledge/melody/composition-planning.md
     tags: [compose, melody, lyrics]
@@ -201,6 +183,24 @@ pages:
     tags: [compose, melody, validation]
     serves-steps: [3]
     summary: Audit giai điệu có thể tái kiểm tra từ MusicXML — canonical phrase representation + metric (exact/near-repeat, rhythm/contour/cadence diversity, section contrast, hook distinctiveness, final development) với evidence bắt buộc
+
+  - id: KNOW.MELODY.SINGABILITY
+    path: docs/m-guide/knowledge/melody/singability.md
+    tags: [compose, melody, vocal]
+    serves-steps: [3]
+    summary: Objective singability — tessitura, leaps, breath, lyric delivery và phân biệt dễ hát với nhàm chán
+
+  - id: KNOW.MELODY.EMOTIONAL-CONTOUR
+    path: docs/m-guide/knowledge/melody/emotional-contour.md
+    tags: [compose, melody, emotion]
+    serves-steps: [3]
+    summary: Objective emotional contour — quan hệ giữa melodic direction và emotional arc, dùng tendencies thay vì công thức cứng
+
+  - id: KNOW.MELODY.TENSION-RELEASE
+    path: docs/m-guide/knowledge/melody/tension-release.md
+    tags: [compose, melody, harmony, rhythm-form]
+    serves-steps: [3]
+    summary: Objective tension-release — buildup, delay, peak và release ở mức phrase/section
 
   - id: KNOW.HARMONY.BASICS
     path: docs/m-guide/knowledge/harmony/basics.md
