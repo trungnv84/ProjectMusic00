@@ -4,7 +4,7 @@ Lưu: `runs/compose/<run-id>/03-composition-notes.md` (hoặc arrangement notes)
 
 **Bắt buộc (Bước 3):** có khối `lyrics_by_section` — bản lời đọc được theo section, **khớp** lời gắn nốt trong MusicXML. Mục đích: người duyệt xem/sửa lời mà không cần mở score. Section instrumental → `lines: []`.
 
-**Bắt buộc thêm:** `motifs_declared`, `hook_melody_cell`, `prosody_audit`, `music_quality_gate`.
+**Bắt buộc thêm:** `motifs_declared`, `hook_melody_cell`, `prosody_audit`, `objective_melody_audit`, `music_quality_gate`.
 
 ---
 
@@ -56,6 +56,20 @@ prosody_audit:           # BẮT BUỘC — hook + ≥1 câu verse
     speak_test: pass|fail
     notes: ""
 
+objective_melody_audit:   # BẮT BUỘC — KNOW.MELODY.OBJECTIVE-METRICS (thiếu = gate FAIL)
+  method: "canonical phrase representation trên MusicXML vừa xuất"
+  scope: ""               # section/measure phạm vi audit
+  metrics:
+    exact_repeat_rate: { value: "", evidence: "" }
+    near_repeat_max: { value: "", evidence: "" }
+    rhythm_diversity: { value: "", evidence: "" }
+    contour_diversity: { value: "", evidence: "" }
+    cadence_variety: { value: "", evidence: "" }
+    section_contrast: { value: "", evidence: "" }
+    hook_distinctiveness: { value: "", evidence: "" }
+    final_development: { value: "", evidence: "" }   # operation cụ thể, không phải register_shift_only
+  warnings: []
+
 music_quality_gate:
   result: PASS|FAIL
   scores:
@@ -81,6 +95,10 @@ music_quality_gate:
     REQUIRE_SPEAK_TEST: pass|fail
     REQUIRE_STYLE_ECHO: pass|fail
     REQUIRE_PIANO_TEXTURE: pass|fail    # thiếu piano_texture hoặc sung_sections_ok false → fail
+    REQUIRE_OBJECTIVE_MELODY_AUDIT: pass|fail  # thiếu objective_melody_audit hoặc metric bắt buộc unavailable → fail
+    MAX_NEAR_REPEAT: pass|fail                 # ≥2 cặp phrase liên tiếp near_repeat_similarity ≥0.90 (trừ A/A' đã khai) → fail
+    REQUIRE_SECTION_OBJECTIVE_CONTRAST: pass|fail  # Verse→Chorus/Bridge phải khác ≥2 dimension đo được
+    REQUIRE_FINAL_DEVELOPMENT_EVIDENCE: pass|fail  # Final phải có operation cụ thể, không chỉ register_shift_only
   evidence: ""
   if_fail: "rewrite whole lead sheet with new motifs AND fix piano texture — do not patch isolated notes; do not defer pad fix to step 4"
 

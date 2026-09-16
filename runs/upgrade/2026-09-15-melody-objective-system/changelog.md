@@ -25,3 +25,11 @@
 Toàn bộ nội dung ở trên là **kế hoạch (ROADMAP.md)**, không phải patch sẵn sàng merge. Từng Gói 1–6 khi được
 thực hiện phải tạo `runs/upgrade/<id>/` riêng theo đúng `prompts/curator.md` / `prompts/improver.md`, và chỉ
 merge vào `docs/m-guide/` khi user duyệt từng gói theo `pipeline/merge-policy.md`.
+
+## 2026-09-15 (bổ sung) — pack-1 không khớp Gói 1
+
+`runs/upgrade/2026-09-15-melody-objective-system-pack-1/` được người khác nộp với tên gần giống Gói 1
+nhưng phạm vi thực tế là **objective audit metrics** (đo lường tái kiểm tra), không phải **Objective
+Selector** (Gói 1 thật trong ROADMAP.md). Đã merge phần audit-metrics vào `docs/m-guide/` như một bổ sung
+riêng (xem `STATUS.md` của pack-1), nhưng **Gói 1 thật vẫn chưa có ai làm** — Gói 2, 3, 5 vẫn đang bị chặn,
+chưa nên giao. Người làm Gói 1 tiếp theo cần đọc đúng mục "Gói 1" trong `ROADMAP.md`, không dựa vào pack-1.

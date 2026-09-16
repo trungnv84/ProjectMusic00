@@ -6,8 +6,8 @@
 # - AI dựng URL: REPO_RAW + "/" + path (xem meta/link-scheme.md)
 # - Cấm path dưới archive/
 
-version: "1.11"
-updated: "2026-09-14"
+version: "1.12"
+updated: "2026-09-15"
 
 pages:
   - id: META.PURPOSE
@@ -74,7 +74,7 @@ pages:
     path: docs/m-guide/pipeline/step-03-compose.md
     tags: [pipeline, compose]
     serves-steps: [3]
-    summary: Playbook Bước 3 — lead sheet một lượt + quality gate (gồm REQUIRE_PIANO_TEXTURE, REQUIRE_CATCHY_HOOK, REQUIRE_MELODIC_COHERENCE) + invent hook cell catchy trước Chorus; thiếu field notes bắt buộc = tự động FAIL
+    summary: Playbook Bước 3 — lead sheet một lượt + quality gate (gồm REQUIRE_PIANO_TEXTURE, REQUIRE_CATCHY_HOOK, REQUIRE_MELODIC_COHERENCE, REQUIRE_OBJECTIVE_MELODY_AUDIT) + invent hook cell catchy trước Chorus + canonicalize/audit objective metrics; thiếu field notes bắt buộc = tự động FAIL
 
   - id: PIPE.STEP-04
     path: docs/m-guide/pipeline/step-04-arrange.md
@@ -176,7 +176,13 @@ pages:
     path: docs/m-guide/knowledge/melody/musical-quality-gate.md
     tags: [compose, melody, lyrics, vietnamese]
     serves-steps: [3]
-    summary: Music quality gate PASS/FAIL trước khi coi Bước 3 xong (gồm REQUIRE_PIANO_TEXTURE, REQUIRE_CATCHY_HOOK, REQUIRE_MELODIC_COHERENCE)
+    summary: Music quality gate PASS/FAIL trước khi coi Bước 3 xong (gồm REQUIRE_PIANO_TEXTURE, REQUIRE_CATCHY_HOOK, REQUIRE_MELODIC_COHERENCE, REQUIRE_OBJECTIVE_MELODY_AUDIT)
+
+  - id: KNOW.MELODY.OBJECTIVE-METRICS
+    path: docs/m-guide/knowledge/melody/objective-metrics.md
+    tags: [compose, melody, validation]
+    serves-steps: [3]
+    summary: Audit giai điệu có thể tái kiểm tra từ MusicXML — canonical phrase representation + metric (exact/near-repeat, rhythm/contour/cadence diversity, section contrast, hook distinctiveness, final development) với evidence bắt buộc
 
   - id: KNOW.HARMONY.BASICS
     path: docs/m-guide/knowledge/harmony/basics.md
