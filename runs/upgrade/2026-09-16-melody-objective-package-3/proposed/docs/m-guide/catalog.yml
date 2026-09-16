@@ -1,0 +1,21 @@
+# Package 3 catalog proposal
+# Insertion/update patch for docs/m-guide/catalog.yml; do not replace the catalog wholesale.
+# Existing package catalog is expected to already contain Package 1/2 entries after merge.
+
+operation: upsert
+entries:
+  - id: KNOW.MELODY.MELODIC-RHYTHM
+    path: docs/m-guide/knowledge/melody/melodic-rhythm.md
+    tags: [compose, melody, rhythm-form]
+    serves-steps: [3]
+    summary: Rhythmic identity của melody — straight/syncopated/swung/triplet, placement, accent và phân biệt identity với complexity
+
+  - id: KNOW.MELODY.HOOK-TYPES
+    path: docs/m-guide/knowledge/melody/hook-types.md
+    tags: [compose, melody, lyrics, rhythm-form]
+    serves-steps: [3]
+    summary: Taxonomy hook — melodic, rhythmic, lyrical, vocal, harmonic, production và call-response; primary/secondary hook
+
+notes:
+  - id: KNOW.MELODY.CONTOUR đã có trong catalog; package này chỉ bump version 1.1 -> 1.2.
+  - id: KNOW.MELODY.PHRASE-STRUCTURE đã có trong catalog; package này chỉ bump version 1.1 -> 1.2.

@@ -1,0 +1,16 @@
+Package 3 — Tier 1 core mechanics, part B
+
+New:
+- proposed/docs/m-guide/knowledge/melody/melodic-rhythm.md
+- proposed/docs/m-guide/knowledge/melody/hook-types.md
+
+Expanded:
+- proposed/docs/m-guide/knowledge/melody/contour.md
+- proposed/docs/m-guide/knowledge/melody/phrase-structure.md
+
+Catalog patch:
+- proposed/docs/m-guide/catalog.yml
+
+No pipeline changes.
+No Objective Selector changes.
+No new hard PASS/FAIL threshold.
