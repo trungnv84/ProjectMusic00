@@ -1,0 +1,21 @@
+# MANIFEST — runs/compose/2026-09-16-nang-som-tinh-khoi
+
+## Changed / new files
+- 01-meta-prompt.md
+- 02-compose-prompt.md
+- 02-arrange-prompt.md
+- 03-song.musicxml
+- 03-composition-notes.md
+- STATUS.md
+- run-review.md
+- MANIFEST.txt
+
+## Step
+- Step 3 Compose only
+
+## Gate
+- music_quality_gate: PASS
+
+## Package 6
+- Validation sample: bright V-Pop / youthful warm playful
+- Full Package 6 closure: pending additional materially different genre/mood runs per ROADMAP.md

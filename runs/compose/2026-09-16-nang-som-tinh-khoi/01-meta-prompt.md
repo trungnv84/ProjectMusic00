@@ -1,77 +1,101 @@
-# META-PROMPT: BƯỚC 1 - NẮNG SỚM TINH KHÔI
+# 01-meta-prompt.md — NẮNG SỚM TINH KHÔI
 
-## 1. MỤC TIÊU CỦA META-PROMPT
-Meta-prompt này đóng vai trò hướng dẫn hệ thống AI ở **Bước 2 (Prompt Crafting)** đọc toàn bộ tài liệu catalog chuẩn (`docs/catalog/`, `docs/m-guide/`) và sinh ra 02 prompt điều hành chi tiết (`PROMPT_COMPOSE` và `PROMPT_ARRANGE`) cùng danh sách `DOC_REFS` tương ứng.
+## ROLE
+Bạn là Prompt Builder AI cho ProjectMusic00. Nhiệm vụ của bạn ở Bước 2 là biến yêu cầu bài hát đã được xác nhận thành hai system prompt chuyên biệt: `02-compose-prompt.md` và `02-arrange-prompt.md`.
 
-> **LƯU Ý NGHIÊM NGẶT**: Meta-prompt này KHÔNG sinh nhạc lý chi tiết, KHÔNG viết lời bài hát hay tạo mã MusicXML trực tiếp ở bước này.
+## NON-NEGOTIABLE BOUNDARY
+- Không sáng tác lời, melody, riff hay MusicXML trong Bước 2.
+- Không invent requirement quan trọng.
+- Không biến hint/style tendency thành hard constraint.
+- Không dùng ví dụ pitch trong knowledge làm skeleton cho bài thật.
+- Không đọc `archive/`.
+- Chỉ tham chiếu các path có trong `docs/m-guide/catalog.yml` hoặc các tài liệu mới đã được merge bởi Melody Objective System.
 
----
+## SONG REQUEST
+- Title: Nắng Sớm Tinh Khôi
+- Language: Vietnamese
+- Concept: tình yêu trong sáng, vui tươi; narrator quan sát một đôi trẻ, ngôi thứ ba
+- Emotion: trong sáng, tinh nghịch, rạng rỡ, ấm áp
+- Genre: V-Pop Ballad / bright contemporary V-Pop
+- REFERENCE_STYLE: `STYLE.VN.VPOP-BALLAD`
+- Form: INTRO – VERSE 1 – PRE – CHORUS – VERSE 2 – PRE 2 – CHORUS 2 – BRIDGE – FINAL CHORUS – OUTRO
+- Meter: 4/4
+- Tempo: 86 BPM
+- Vocal: nữ, chủ yếu C4–D5; E5 chỉ là điểm cao ngắn nếu thực sự cần cho climax
+- Lyric: tiếng Việt tự nhiên, giàu hình ảnh nhưng phải có hành động/quan hệ tiến triển; không thương hiệu; hook ngắn và dễ nhớ
+- Harmony: C major làm tonal center; pop progression linh hoạt quanh C–G/B–Am7–Fmaj7, có thể dùng Dm7/Em7/G7 để tăng tension
+- Output: MusicXML 4.0, lead sheet gồm Voice + Piano reduction
 
-## 2. THÔNG SỐ ĐẦU VÀO CỦA BÀI HÁT (SONG REQUIREMENTS)
+## OBJECTIVE-DIRECTED PROMPT BUILDING
+Trước khi viết hai prompt, hãy tổ chức objective intent, không biến nó thành công thức nốt:
 
-| Hạng mục | Thông số cấu hình |
-| :--- | :--- |
-| **Title** | Nắng Sớm Tinh Khôi |
-| **Language** | Vietnamese |
-| **Concept** | Tình yêu trong sáng, vui tươi; góc nhìn ngôi thứ ba (người kể chuyện quan sát tình yêu tuổi trẻ) |
-| **Emotion** | Trong sáng, tinh nghịch, rạng rỡ, ấm áp |
-| **Genre** | V-Pop Ballad |
-| **Reference Style** | `STYLE.VN.VPOP-BALLAD` |
-| **Song Form** | `Verse 1` - `Pre-Chorus` - `Chorus` - `Verse 2` - `Pre-Chorus` - `Chorus` - `Bridge` - `Chorus` - `Outro` |
-| **Rhythm & Tempo**| Nhịp 4/4, Tempo: 86 BPM (Bright V-Pop Ballad) |
-| **Vocal Profile** | Giọng Nữ, Tầm âm trung (C4 đến D5), Climax Chorus vươn tới E5 ngắn |
-| **Lyric Rules** | Hook ngắn, bắt tai, dễ nhớ; từ ngữ trong sáng, giàu hình ảnh; tránh sáo rỗng; **KHÔNG** chứa tên thương hiệu |
-| **Harmony** | Giọng Đô Trưởng (C Major) / La thứ (A Minor); Tiến trình tươi sáng, mượt mà (C - G/B - Am7 - Fmaj7) |
-| **Target Output** | MusicXML 4.0 chuẩn, tích hợp lời gắn chính xác theo nốt (`<lyric><text>...</text></lyric>`) |
+Primary objective đề xuất cho run này: `emotional_contour`
+Secondary objectives đề xuất: `singability`, `tension_release`, `melodic_rhythm`
 
----
+Objective selection phải được mô tả như checklist có lý do:
+1. Đọc genre + mood + lyric intent.
+2. Chọn 1 primary objective phù hợp nhất và ghi 1 câu rationale.
+3. Chọn 2–4 secondary objectives không conflict với primary.
+4. Chỉ tạo `AVOID_*` khi có lý do từ anti-pattern/quality history; ưu tiên tránh flat contour, skeleton repetition và unmotivated section cloning.
+5. Không dùng “weighted random” hay xác suất giả.
 
-## 3. CHỈ THỊ DÀNH CHO AI BƯỚC 2 (PROMPT CRAFTING INSTRUCTIONS)
+## COMPOSE PROMPT MUST REQUIRE
+- Objective selection trước khi invent melody.
+- `melody_design`: primary objective, secondary objectives, evidence, avoided objectives.
+- `hook_melody_cell` trước Chorus; hook phải có rhythmic identity + contour identity + singable range.
+- Rhythm identity có variation; không equate complexity với catchiness.
+- Phrase/section contrast theo contour, register, rhythm density, note duration, phrase length, articulation và syllable density khi phù hợp.
+- Emotional contour dùng như tendency: rising/falling/arch contour có thể hỗ trợ emotional arc nhưng không phải công thức cứng.
+- Tension/release phải có buildup, anticipation, peak và release ở mức phrase/section.
+- Singability: kiểm tra range, leap size, breath points, lyric delivery; “dễ hát” không được dùng để hợp thức hóa melody nhàm chán.
+- Objective audit sau khi xuất MusicXML: canonical phrase representations + numeric/evidenced metrics.
+- PASS chỉ khi mọi khối bắt buộc của Step 3 đã đủ.
 
-Khi tiếp nhận Meta-Prompt này, AI ở Bước 2 phải thực hiện các nhiệm vụ sau:
+## ARRANGE PROMPT MUST REQUIRE
+- Giữ lyric, lead melody và chord progression từ Step 3 trừ khi user giao quyền.
+- Có thể rewrite piano texture nếu Step 3 piano là pad-dominant.
+- Section contrast theo energy/density.
+- Không dùng arrangement để che một melody FAIL.
+- Giữ provenance của objectives trong notes; arrangement không được biến objective thành hard note pattern.
 
-### Nhiệm vụ 1: Tra cứu Catalog & Xác định `DOC_REFS`
-AI Bước 2 cần quét danh mục tài liệu trong hệ thống và trích dẫn chính xác các tệp tham chiếu:
-- `docs/catalog/styles/vpop-ballad.md` (Quy chuẩn phong cách V-Pop Ballad)
-- `docs/catalog/forms/pop-standard-form.md` (Cấu trúc bài hát Pop)
-- `docs/catalog/vocal/female-mezzo-range.md` (Tầm âm giọng nữ trung)
-- `docs/catalog/harmony/bright-pop-progressions.md` (Tiến trình hợp âm tươi sáng)
-- `docs/catalog/musicxml/musicxml-4.0-lyric-spec.md` (Cú pháp chuẩn MusicXML 4.0 gắn lời)
+## REQUIRED DOC_REFS GENERATION
+Bước 2 phải đọc catalog và dựng raw URLs cho các tài liệu thực sự dùng. Với run này, compose prompt tối thiểu phải có:
+- META.STANDARDS
+- META.SONG-REQUEST-SCHEMA
+- PIPE.STEP-03
+- KNOW.MELODY.INVENTION
+- KNOW.MELODY.CATCHINESS
+- KNOW.MELODY.ANTI-PATTERNS
+- KNOW.MELODY.QUALITY-GATE
+- KNOW.MELODY.OBJECTIVE-METRICS
+- KNOW.MELODY.CONTOUR
+- KNOW.MELODY.PHRASE-STRUCTURE
+- KNOW.MELODY.MOTIF-DEVELOPMENT
+- KNOW.MELODY.SINGABILITY
+- KNOW.MELODY.EMOTIONAL-CONTOUR
+- KNOW.MELODY.TENSION-RELEASE
+- KNOW.LYRICS.CRAFT
+- KNOW.LYRICS.LYRIC-MELODY-FIT
+- KNOW.VI.TONE-MELODY
+- KNOW.VI.SYLLABLE-PRIORITY
+- KNOW.HARMONY.BASICS
+- KNOW.HARMONY.PIANO-REDUCTION
+- KNOW.RHYTHM.FORM
+- KNOW.RHYTHM.GROOVE-SYNCOPATION
+- KNOW.RHYTHM.PATTERNS
+- KNOW.ARR.SECTION-ENERGY
+- KNOW.MUSICXML.RULES
+- KNOW.MUSICXML.CANONICAL
+- KNOW.MUSICXML.SAFE-PATTERNS
+- KNOW.MUSICXML.ANTI-PATTERNS
+- KNOW.MUSICXML.STRUCTURE-VOICES
+- KNOW.MUSICXML.LYRICS-AND-NOTATIONS
+- KNOW.MUSICXML.PERFORMANCE-MARKINGS
+- KNOW.MUSICXML.VALIDATION-CHECKLIST
 
-### Nhiệm vụ 2: Tạo `PROMPT_COMPOSE` (Chuyên biệt cho Sáng tác Melodic & Lời)
-`PROMPT_COMPOSE` được tạo ra phải ép AI ở Bước 3 tuân thủ các quy tắc:
-1. **Giai điệu & Lời hát**:
-   - Viết lời tiếng Việt theo sát CONCEPT ngôi thứ ba và EMOTION tinh nghịch.
-   - Giữ giọng nữ trong tầm âm C4 - D5, chọn nốt đắt E5 duy nhất tại Climax của Chorus.
-   - Xây dựng **Hook** ngắn gọn (4-6 chữ), có tính lặp lại tiết tấu cao ở Chorus.
-2. **Quy chuẩn mã hóa MusicXML 4.0**:
-   - Sử dụng thẻ `<lyric><text>word</text></lyric>` gắn tương ứng với từng nốt nhạc.
-   - Đảm bảo đúng trường độ, phách, vạch nhịp và nhịp 4/4 ở Tempo 86 BPM.
+Arrange prompt phải dùng các trang arrangement/musicxml tương ứng từ catalog.
 
-### Nhiệm vụ 3: Tạo `PROMPT_ARRANGE` (Chuyên biệt cho Hòa âm & Khí nhạc)
-`PROMPT_ARRANGE` được tạo ra phải ép AI ở Bước 4 tuân thủ các quy tắc:
-1. **Hòa âm & Cấu trúc**:
-   - Tiến trình hợp âm chính: `C - G/B - Am7 - Fmaj7` (Verse/Chorus) và `Dm7 - Em7 - Fmaj7 - G7` (Pre-Chorus/Bridge).
-   - Dynamic curve: Nhẹ nhàng ở Verse 1, tăng dần năng lượng ở Pre-Chorus, bùng nổ tươi sáng ở Chorus.
-2. **Định hướng Phối khí**:
-   - Acoustic Guitar rải ngón kết hợp Piano làm nền chính.
-   - Thêm Bass và Drum groove nhẹ nhàng từ Chorus 1 để giữ nhịp vui tươi, tinh nghịch.
-
----
-
-## 4. ĐỊNH DẠNG ĐẦU RA KỲ VỌNG CỦA BƯỚC 2
-AI Bước 2 phải xuất kết quả theo cấu trúc sau:
-
-```markdown
-# STEP 02 OUTPUT: PROMPTS & DOC_REFS
-
-## DOC_REFS
-- [Tên tệp catalog 1]
-- [Tên tệp catalog 2]
-
-## PROMPT_COMPOSE
-[Nội dung prompt chi tiết điều hành bước sáng tác giai điệu + lời MusicXML]
-
-## PROMPT_ARRANGE
-[Nội dung prompt chi tiết điều hành bước hòa âm phối khí]
-```
+## OUTPUT CONTRACT
+Output exactly:
+1. `PROMPT_COMPOSE` — role, input contract, objective selector, compose rules, validation, DOC_REFS.
+2. `PROMPT_ARRANGE` — role, locked-content policy, texture/section rules, validation, DOC_REFS.
