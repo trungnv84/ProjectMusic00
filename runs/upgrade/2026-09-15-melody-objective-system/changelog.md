@@ -33,3 +33,13 @@ nhưng phạm vi thực tế là **objective audit metrics** (đo lường tái 
 Selector** (Gói 1 thật trong ROADMAP.md). Đã merge phần audit-metrics vào `docs/m-guide/` như một bổ sung
 riêng (xem `STATUS.md` của pack-1), nhưng **Gói 1 thật vẫn chưa có ai làm** — Gói 2, 3, 5 vẫn đang bị chặn,
 chưa nên giao. Người làm Gói 1 tiếp theo cần đọc đúng mục "Gói 1" trong `ROADMAP.md`, không dựa vào pack-1.
+
+## 2026-09-16 — Gói 2 đã merge (dưới tên thư mục "melody-objective-package-2")
+
+`runs/upgrade/2026-09-16-melody-objective-package-2/` — nội dung đúng Gói 2 (singability, emotional-contour,
+tension-release) trong ROADMAP.md, đã merge vào `docs/m-guide/knowledge/melody/` + `catalog.yml` (v1.13).
+Metadata trong STATUS.md của pack này tự khai `package: 2`, khớp đúng — nhưng người giao việc gọi nhầm là
+"Gói 1" khi giao. **Gói 1 thật (Objective Selector: `melody-objectives.schema.md` +
+`objective-selection.md` + patch `step-03-compose.md`/`composition-notes.template.md`/`catalog.yml`) vẫn
+chưa có ai làm** — 3 trang vừa merge hiện chưa được fetch/chọn bởi cơ chế nào trong pipeline. Cần làm Gói 1
+thật trước khi chạy Gói 6 (kiểm chứng bằng run thật).
