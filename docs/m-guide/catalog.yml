@@ -6,7 +6,7 @@
 # - AI dựng URL: REPO_RAW + "/" + path (xem meta/link-scheme.md)
 # - Cấm path dưới archive/
 
-version: "1.13"
+version: "1.14"
 updated: "2026-09-16"
 
 pages:
@@ -201,6 +201,18 @@ pages:
     tags: [compose, melody, harmony, rhythm-form]
     serves-steps: [3]
     summary: Objective tension-release — buildup, delay, peak và release ở mức phrase/section
+
+  - id: KNOW.MELODY.MELODIC-RHYTHM
+    path: docs/m-guide/knowledge/melody/melodic-rhythm.md
+    tags: [compose, melody, rhythm-form]
+    serves-steps: [3]
+    summary: Rhythmic identity của melody — straight/syncopated/swung/triplet, placement, accent và phân biệt identity với complexity
+
+  - id: KNOW.MELODY.HOOK-TYPES
+    path: docs/m-guide/knowledge/melody/hook-types.md
+    tags: [compose, melody, lyrics, rhythm-form]
+    serves-steps: [3]
+    summary: Taxonomy hook — melodic, rhythmic, lyrical, vocal, harmonic, production và call-response; primary/secondary hook
 
   - id: KNOW.HARMONY.BASICS
     path: docs/m-guide/knowledge/harmony/basics.md

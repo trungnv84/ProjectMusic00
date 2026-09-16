@@ -41,3 +41,14 @@ chưa nên giao. Người làm Gói 1 tiếp theo cần đọc đúng mục "Gó
 catalog.yml v1.13. **Gói 1 thật (Objective Selector) vẫn chưa có ai làm** — Gói 2 dùng trước các field
 schema (`objective_id`, `compatible_with`...) như thiết kế đón đầu, nhưng chưa có trang schema chính thức
 để validate. Gói 3 có thể giao song song (không phụ thuộc Gói 2).
+
+## 2026-09-16 (tiếp) — Gói 3 đã merge
+
+`runs/upgrade/2026-09-16-melody-objective-package-3/` đúng phạm vi "Gói 3 — Tier 1 core mechanics, phần B":
+`melodic-rhythm.md`, `hook-types.md` (mới) + mở rộng `contour.md` v1.2, `phrase-structure.md` v1.2 (đúng
+khuyến nghị ROADMAP: không tạo `melodic-contrast.md` riêng). catalog.yml v1.14. Không thêm hard threshold.
+
+Tiến độ: Gói 1 thật (Objective Selector) vẫn là việc còn thiếu duy nhất chặn Gói 4/5/6. Gói 2+3 đã xong,
+sẵn sàng cho Gói 4 (genre-melody-profiles/cadence/call-response) khi có người nhận — nhưng theo đúng thứ tự
+phụ thuộc trong ROADMAP, nên ưu tiên làm Gói 1 thật trước khi mở Gói 4/5, và chạy Gói 6 (test compose) ngay
+khi Gói 1 xong để tránh xây thêm nội dung trước khi biết cơ chế chọn objective có hoạt động đúng không.
